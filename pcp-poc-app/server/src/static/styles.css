@@ -1,0 +1,32 @@
+body {
+    background-color: #323031;    
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    justify-content: center;
+}
+
+h1 {
+    flex: 1 1 auto; 
+    font-family: 'Rubik:wght@500', sans-serif;
+    color: #fff; 
+    font-size: 42px;
+}
+
+img {
+    background-color: #fff;
+    border-radius: 100%; 
+    border: 1px solid aliceblue;
+}
+
+p {
+    font-family: 'Rubik:wght@500', sans-serif;
+    font-size: 28px; 
+    color: #fff; 
+}
+
+a { 
+    font-family: 'Rubik:wght@500', sans-serif;
+    font-size: 28px; 
+    color: #50ebff;
+}
