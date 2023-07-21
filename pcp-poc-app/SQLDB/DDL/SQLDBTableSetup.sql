@@ -2,20 +2,21 @@
 Create initial Product Config Portal table
 :TODO: create a specific schema for the pcp poc
 */
+-- USE [sqldb-dev-dplatsql-db]
+USE [PCP_POC_DB]
 
-IF OBJECT_ID('[DPSN].[pcp_poc_system_mapping]', 'U') IS NULL 
-CREATE TABLE [DPSN].[pcp_poc_system_mapping] (
-    hydraulic_system_name VARCHAR(64) NOT NULL, 
+IF OBJECT_ID('[DPSN_DEMO].[pcp_poc_system_mapping]', 'U') IS NULL 
+CREATE TABLE [DPSN_DEMO].[pcp_poc_system_mapping] (
+    hydraulic_system_name VARCHAR(64) PRIMARY KEY, 
     area_name VARCHAR(32) NOT NULL, 
     region_name VARCHAR(64) NOT NULL, 
     comments VARCHAR(256), 
     odmt_area_id INT NOT NULL, 
     last_modified DATETIME, -- Date when data was last pushed from updates to current 
-    PRIMARY KEY (hydraulic_system_name) 
 );
 
-IF OBJECT_ID('[DPSN].[pcp_poc_sres]', 'U') IS NULL
-CREATE TABLE [DPSN].[pcp_poc_sres] (
+IF OBJECT_ID('[DPSN_DEMO].[pcp_poc_sres]', 'U') IS NULL
+CREATE TABLE [DPSN_DEMO].[pcp_poc_sres] (
     odmt_sres_id INT IDENTITY(1,1) PRIMARY KEY, 
     hydraulic_system_name VARCHAR(64) NOT NULL, 
     sres_name VARCHAR(128) NOT NULL, 
@@ -34,12 +35,11 @@ CREATE TABLE [DPSN].[pcp_poc_sres] (
     validated_tag VARCHAR(256), 
     engineering_unit VARCHAR(64) NOT NULL,
     last_modified DATETIME, -- Date when data was last pushed from updates to current 
-    PRIMARY KEY(odmt_sres_id),
-    FOREIGN KEY (hydraulic_system_name) REFERENCES [DPSN].[pcp_poc_system_mapping](hydraulic_system_name)
+    FOREIGN KEY (hydraulic_system_name) REFERENCES [DPSN_DEMO].[pcp_poc_system_mapping](hydraulic_system_name)
 );
 
-IF OBJECT_ID('[DPSN].[pcp_poc_contact_tanks]', 'U') IS NULL
-CREATE TABLE [DPSN].[pcp_poc_contact_tanks] (
+IF OBJECT_ID('[DPSN_DEMO].[pcp_poc_contact_tanks]', 'U') IS NULL
+CREATE TABLE [DPSN_DEMO].[pcp_poc_contact_tanks] (
     odmt_contact_tank_id INT IDENTITY(1,1) PRIMARY KEY, 
     hydraulic_system_name VARCHAR(64) NOT NULL, 
     sres_name VARCHAR(128) NOT NULL, 
@@ -58,11 +58,11 @@ CREATE TABLE [DPSN].[pcp_poc_contact_tanks] (
     cell_status VARCHAR(32), 
     comments VARCHAR(1024), 
     last_modified DATETIME, -- Date when data was last pushed from updates to current 
-    FOREIGN KEY (hydraulic_system_name) REFERENCES [DPSN].[pcp_poc_system_mapping](hydraulic_system_name)
+    FOREIGN KEY (hydraulic_system_name) REFERENCES [DPSN_DEMO].[pcp_poc_system_mapping](hydraulic_system_name)
 );
 
-IF OBJECT_ID('[DPSN].[pcp_poc_audit_log]', 'U') IS NULL
-CREATE TABLE [DPSN].[pcp_poc_audit_log] (
+IF OBJECT_ID('[DPSN_DEMO].[pcp_poc_audit_log]', 'U') IS NULL
+CREATE TABLE [DPSN_DEMO].[pcp_poc_audit_log] (
     id INT IDENTITY(1,1),
     event_id VARCHAR(10) PRIMARY KEY, 
     table_altered VARCHAR(50),
@@ -74,8 +74,8 @@ CREATE TABLE [DPSN].[pcp_poc_audit_log] (
 ); 
 
 -- Create the update pending tables 
-IF OBJECT_ID('[DPSN].[pcp_poc_system_mapping_updates]', 'U') IS NULL 
-CREATE TABLE [DPSN].[pcp_poc_system_mapping_updates] (
+IF OBJECT_ID('[DPSN_DEMO].[pcp_poc_system_mapping_updates]', 'U') IS NULL 
+CREATE TABLE [DPSN_DEMO].[pcp_poc_system_mapping_updates] (
     id INT IDENTITY(1,1) PRIMARY KEY, 
     hydraulic_system_name VARCHAR(64) NOT NULL, 
     area_name VARCHAR(32) NOT NULL, 
@@ -83,11 +83,11 @@ CREATE TABLE [DPSN].[pcp_poc_system_mapping_updates] (
     comments VARCHAR(256), 
     odmt_area_id INT NOT NULL,
     date_updated DATETIME DEFAULT GETDATE(), -- When updated data was added
-    FOREIGN KEY (hydraulic_system_name) REFERENCES [DPSN].[pcp_poc_system_mapping](hydraulic_system_name)
+    FOREIGN KEY (hydraulic_system_name) REFERENCES [DPSN_DEMO].[pcp_poc_system_mapping](hydraulic_system_name)
 );
 
-IF OBJECT_ID('[DPSN].[pcp_poc_sres_updates]', 'U') IS NULL
-CREATE TABLE [DPSN].[pcp_poc_sres_updates] (
+IF OBJECT_ID('[DPSN_DEMO].[pcp_poc_sres_updates]', 'U') IS NULL
+CREATE TABLE [DPSN_DEMO].[pcp_poc_sres_updates] (
     id INT IDENTITY(1,1) PRIMARY KEY, 
     odmt_sres_id INT, 
     hydraulic_system_name VARCHAR(64) NOT NULL, 
@@ -107,12 +107,12 @@ CREATE TABLE [DPSN].[pcp_poc_sres_updates] (
     validated_tag VARCHAR(256), 
     engineering_unit VARCHAR(64) NOT NULL,
     date_updated DATETIME DEFAULT GETDATE(), -- When updated data was added to table
-    FOREIGN KEY (hydraulic_system_name) REFERENCES [DPSN].[pcp_poc_system_mapping](hydraulic_system_name), 
-    FOREIGN KEY (odmt_sres_id) REFERENCES [DPSN].[pcp_poc_sres](odmt_sres_id)
+    FOREIGN KEY (hydraulic_system_name) REFERENCES [DPSN_DEMO].[pcp_poc_system_mapping](hydraulic_system_name), 
+    FOREIGN KEY (odmt_sres_id) REFERENCES [DPSN_DEMO].[pcp_poc_sres](odmt_sres_id)
 );
 
-IF OBJECT_ID('[DPSN].[pcp_poc_contact_tanks_updates]', 'U') IS NULL
-CREATE TABLE [DPSN].[pcp_poc_contact_tanks_updates] (
+IF OBJECT_ID('[DPSN_DEMO].[pcp_poc_contact_tanks_updates]', 'U') IS NULL
+CREATE TABLE [DPSN_DEMO].[pcp_poc_contact_tanks_updates] (
     id INT IDENTITY(1,1) PRIMARY KEY, 
     odmt_contact_tank_id INT, 
     hydraulic_system_name VARCHAR(64) NOT NULL, 
@@ -132,7 +132,7 @@ CREATE TABLE [DPSN].[pcp_poc_contact_tanks_updates] (
     cell_status VARCHAR(32), 
     comments VARCHAR(1024), 
     date_updated DATETIME DEFAULT GETDATE(), -- When updated data was added to table
-    FOREIGN KEY (hydraulic_system_name) REFERENCES [DPSN].[pcp_poc_system_mapping](hydraulic_system_name), 
-    FOREIGN KEY (odmt_contact_tank_id) REFERENCES [DPSN].[pcp_poc_contact_tanks](odmt_contact_tank_id)
+    FOREIGN KEY (hydraulic_system_name) REFERENCES [DPSN_DEMO].[pcp_poc_system_mapping](hydraulic_system_name), 
+    FOREIGN KEY (odmt_contact_tank_id) REFERENCES [DPSN_DEMO].[pcp_poc_contact_tanks](odmt_contact_tank_id)
 
 );

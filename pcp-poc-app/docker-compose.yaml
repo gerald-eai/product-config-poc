@@ -1,1 +1,93 @@
 # Dockerize the application
+version: '3.8'
+# create our shared network between all the images
+networks:
+  pcp_poc_vn: 
+    driver: bridge
+
+
+services: 
+  fastapi: 
+    container_name: pcp-poc-server
+    restart: always 
+    build: 
+      dockerfile: Dockerfile
+      context: ./server/
+      platforms: 
+        - linux/arm64
+    # map the volumes so that when changes are made in local they reflect in the container
+    volumes: 
+      - ./server/src/:/app/
+    # map the ports <host>:<container>
+    ports:
+      - "8000:8000"
+    depends_on:
+      - mssql
+    networks: 
+      - pcp_poc_vn
+    command: 
+      - uvicorn
+      - server:api
+      - --host
+      - "0.0.0.0"
+      - --port
+      - "8000"
+      - --reload
+
+
+  # For local development use sql server image
+  mssql:
+    user: "root"
+    image: mcr.microsoft.com/azure-sql-edge:latest
+    ports:
+      - 1433:1433
+    environment:
+      - ACCEPT_EULA=1
+      - MSSQL_SA_PASSWORD=L0ckedUp
+      - MSSQL_PID=Developer
+    volumes:
+      - ./SQLDB/DDL/:/var/opt/mssql/DDL/
+    networks:
+      - pcp_poc_vn
+    command:
+      - /bin/bash
+      - -c 
+      - |
+        # Launch MSSQL and send to background
+        /opt/mssql/bin/sqlservr &
+        # Wait 30 seconds for it to be available
+        sleep 45
+        # So that the container doesn't shut down, sleep this thread
+        sleep infinity 
+  
+  sqlcmd: 
+    image: mcr.microsoft.com/mssql-tools:latest
+    build: 
+      platforms:  
+        - linux/arm64                                                                                 
+    stdin_open: true
+    environment:
+        - MSSQL_SA_PASSWORD=L0ckedUp # change password for this database
+    volumes:
+      - ./SQLDB/DDL/:/var/opt/mssql/DDL/
+    networks:
+      - pcp_poc_vn
+    command: 
+      - /bin/bash 
+      - -c 
+      - |
+        sleep 45
+        /opt/mssql-tools/bin/sqlcmd -S mssql -U sa -P L0ckedUp -i /var/opt/mssql/DDL/SQLDBDemoDBSetup.sql
+        sleep 10
+        /opt/mssql-tools/bin/sqlcmd -S mssql -U sa -P L0ckedUp -i /var/opt/mssql/DDL/SQLDBCreateSchema.sql
+        sleep 10
+        /opt/mssql-tools/bin/sqlcmd -S mssql -U sa -P L0ckedUp -i /var/opt/mssql/DDL/SQLDBTableSetup.sql
+        sleep 10
+        /opt/mssql-tools/bin/sqlcmd -S mssql -U sa -P L0ckedUp -i /var/opt/mssql/DDL/SQLDBPopulateTable.sql
+        # So that the container doesn't shut down, sleep this thread 
+
+  # /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P L0ckedUp$ -i /var/opt/mssql/DDL/SQLDBDemoDBSetup.sql
+  # /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P L0ckedUp$ -i /var/opt/mssql/DDL/SQLDBTableSetup.sql
+  # /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P L0ckedUp$ -i /var/opt/mssql/DDL/SQLDBPopulateTable.sql
+
+    
