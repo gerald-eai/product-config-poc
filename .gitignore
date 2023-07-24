@@ -127,6 +127,7 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+*.env.dev
 
 # Spyder project settings
 .spyderproject
@@ -170,3 +171,6 @@ cython_debug/
 eai_ssh_token
 *.pub
 
+pcp-poc-app/SQLDB/DDL/SQLDBPopulateTable.sql
+pcp-poc-app/SQLDB/DDL/SQLDBCreateSchema.sql
+pcp-poc-app/SQLDB/DDL/SQLDBDemoDBSetup.sql
