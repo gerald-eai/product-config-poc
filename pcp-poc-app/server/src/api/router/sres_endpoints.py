@@ -5,7 +5,7 @@ from services.sres_service import SresService, SresUpdatesService
 from schemas.sres_schema import SresBase, SresUpdateBase
 from api.requests import sres_requests
 
-router = APIRouter(prefix="/sres")
+router = APIRouter(prefix="/sres", tags=["sres endpoints"])
 
 # Read Operations
 @router.get("/live", response_model=list[SresBase])
