@@ -1,4 +1,4 @@
-from db.models.system_mapping import SystemMappingCurrent, SystemMappingUpdates
+# from db.models.system_mapping import SystemMappingCurrent, SystemMappingUpdates
 from sqlalchemy.orm import Session 
 from db.sytem_mapping_repository import SystemMappingRepository, SystemMappingUpdatesRepository
 from schemas.system_mapping_schema import SystemMappingCurrent, SystemMappingUpdate

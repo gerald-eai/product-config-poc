@@ -10,7 +10,7 @@ class SystemMappingBase(BaseModel):
     region_name: str 
     comments: str | None = None
     odmt_area_id: int 
-    last_modified: datetime | None = None 
+    # last_modified: datetime | None = None 
     
     model_config=ConfigDict(from_attributes=True)
     
