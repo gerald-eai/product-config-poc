@@ -5,7 +5,7 @@ from api.requests import system_mapping_requests
 from services.system_mapping_service import SystemMappingService, SystemMappingUpdateService
 
 
-router = APIRouter(prefix="/system_mapping", tags=["system_mapping endpoints"])
+router = APIRouter(prefix="/system-mapping", tags=["System Mapping endpoints"])
 
 # read operations 
 @router.get("/live", response_model=list[SystemMappingBase])
