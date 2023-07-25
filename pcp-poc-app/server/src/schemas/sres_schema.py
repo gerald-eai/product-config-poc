@@ -71,6 +71,7 @@ class SresCurrent(Sres):
         self.bwl = sres_db.bwl
         self.twl = sres_db.twl
         self.capacity = sres_db.capacity
+        self.last_modified = sres_db.last_modified
 
     @classmethod
     def from_db(cls, sres_db: SresCurrent): 
