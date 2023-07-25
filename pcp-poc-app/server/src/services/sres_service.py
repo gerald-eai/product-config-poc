@@ -19,7 +19,6 @@ class SresService():
     
     def get_by_id(self, sres_id: int): 
         query = self.repository.get_by_id(sres_id=sres_id)
-        print(query)
         return SresCurrent.from_db(query) 
     
 # create service for updating the contents of the SRES Updates table

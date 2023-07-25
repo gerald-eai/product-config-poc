@@ -19,12 +19,12 @@ class ContactTanksCurrent(Base):
     operating_level =Column(Float)
     bwl=Column(Float) 
     twl=Column(Float)
-    capacity =Column(Float)
-    comments =Column(String) 
-    include_SDSR =Column(SmallInteger) 
-    include_SRV =Column(SmallInteger) 
-    include_WPRO =Column(SmallInteger) 
-    last_modified =Column(DateTime)
+    capacity=Column(Float)
+    comments=Column(String) 
+    include_SDSR=Column(SmallInteger) 
+    include_SRV=Column(SmallInteger) 
+    include_WPRO=Column(SmallInteger) 
+    last_modified=Column(DateTime)
     ForeignKeyConstraint(["hydraulic_system_name"], ["pcp_poc_system_mapping.hydraulic_system_name"])
     
 class ContactTanksUpdate(Base): 
