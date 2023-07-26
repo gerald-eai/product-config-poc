@@ -23,6 +23,12 @@ class AuditLogRepository:
     def create_event(self, new_log: CreateAuditRequest):
         # create a new entry with data provided
         new_audit_obj = AuditLog(**new_log.model_dump())
+        
+        # check if an entry already exists 
+        search_db_obj = self.db.query(AuditLog).filter(AuditLog.event_id == new_audit_obj.event_id).all()
+        if len(search_db_obj) > 0:
+            raise ValueError(f"An entry already exists for Event Id: {new_audit_obj.event_id}")
+        
         self.db.add(new_audit_obj)
         self.db.flush()
 

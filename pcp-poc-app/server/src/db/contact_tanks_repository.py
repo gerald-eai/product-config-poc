@@ -60,7 +60,11 @@ class ContactTankUpdatesRepository:
 
     def create_new_update(self, new_entry: CreateContactTankRequest):
         tank_db_obj = ContactTanksUpdate(**new_entry.model_dump())
-
+        # check if an entry already exists 
+        search_db_obj = self.db.query(ContactTanksUpdate).filter(ContactTanksUpdate.odmt_contact_tank_id == tank_db_obj.odmt_contact_tank_id).all()
+        if len(search_db_obj) > 0:
+            raise ValueError(f"An entry already exists for Contact Tank Id {tank_db_obj.odmt_contact_tank_id}")
+        
         self.db.add(tank_db_obj)
         self.db.flush()
         self.db.commit()

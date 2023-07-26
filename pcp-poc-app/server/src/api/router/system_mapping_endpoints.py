@@ -1,11 +1,13 @@
-from fastapi import APIRouter, Depends
-from api.dependencies import get_sys_map_service, get_sys_map_update_service
+from fastapi import APIRouter, Depends, HTTPException
+from api.dependencies import get_sys_map_service, get_sys_map_update_service, get_audit_log_service
 from schemas.system_mapping_schema import SystemMappingBase, SystemMappingUpdatesBase
 from api.requests import system_mapping_requests
 from services.system_mapping_service import (
     SystemMappingService,
     SystemMappingUpdateService,
 )
+from api.requests.audit_log_requests import CreateAuditRequest
+from services.audit_log_service import AuditLogService
 
 
 router = APIRouter(prefix="/system-mapping", tags=["System Mapping endpoints"])
@@ -62,9 +64,23 @@ def create_update_entry(
     sys_map_update_service: SystemMappingUpdateService = Depends(
         get_sys_map_update_service
     ),
+    audit_service: AuditLogService = Depends(get_audit_log_service),
 ):
-    sys_map_data = sys_map_update_service.create_new_update(create_request)
-    return sys_map_data
+    try: 
+        new_sys_map_entry = sys_map_update_service.create_new_update(create_request)
+        # create an event based on this
+        new_audit_event = CreateAuditRequest(
+            table_altered="pcp_poc_system_mapping_updates",
+            event_type="New System Mapping Update Entry",
+            previous_value="None",
+            updated_value="updated",
+            actor="CreateTest@testuser.com",
+            event_date=new_sys_map_entry.date_updated,
+        )
+        audit_service.create_new_event(new_audit_event)
+        return new_sys_map_entry
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
 
 
 # update in updates

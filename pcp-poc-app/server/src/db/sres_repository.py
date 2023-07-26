@@ -53,7 +53,12 @@ class SresUpdatesRepository:
 
     def create_new_update(self, new_entry: CreateSresUpdate):
         sres_update_db = SresUpdates(**new_entry.model_dump())
-
+        
+        # check if an entry already exists 
+        search_db_obj = self.db.query(SresUpdates).filter(SresUpdates.odmt_sres_id == sres_update_db.odmt_sres_id).all()
+        if len(search_db_obj) > 0:
+            raise ValueError(f"An entry already exists for sres id {sres_update_db.odmt_sres_id}")
+        
         self.db.add(sres_update_db)
         self.db.flush()
         self.db.commit()

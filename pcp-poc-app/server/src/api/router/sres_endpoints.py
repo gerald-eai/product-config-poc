@@ -1,5 +1,5 @@
 # API Endpoints for SRES based requests
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from api.dependencies import (
     get_sres_service,
     get_sres_update_service,
@@ -53,7 +53,7 @@ def get_update_by_sres_id(
     sres_data = sres_service.get_by_id(sres_id=odmt_sres_id)
     return sres_data
 
-
+# leave this endpoint omitted for now
 # @router.get("/updates/{update_id}", response_model=list[SresUpdateBase])
 # def get_update_by_update_id(odmt_sres_id: int, sres_service: SresUpdatesService = Depends(get_sres_update_service)):
 #     sres_data = sres_service.get_by_id(sres_id=odmt_sres_id)
@@ -67,23 +67,26 @@ def create_sres_update(
     sres_service: SresUpdatesService = Depends(get_sres_update_service),
     audit_service: AuditLogService = Depends(get_audit_log_service),
 ):
-    new_sres_update = sres_service.create_new_update(create_sres_update)
-    # create an event based on this
-    new_audit_event = CreateAuditRequest(
-        table_altered="pcp_poc_sres_updates",
-        event_type="New SRES Update",
-        previous_value="None",
-        updated_value="updated",
-        actor="test@testuser.com",
-        event_date=new_sres_update.date_updated,
-    )
-    audit_service.create_new_event(new_audit_event)
-    return new_sres_update
-
-
+    try: 
+        new_sres_update = sres_service.create_new_update(create_sres_update)
+        # create an event based on this
+        new_audit_event = CreateAuditRequest(
+            table_altered="pcp_poc_sres_updates",
+            event_type="New SRES Update",
+            previous_value="None",
+            updated_value="updated",
+            actor="test@testuser.com",
+            event_date=new_sres_update.date_updated,
+        )
+        audit_service.create_new_event(new_audit_event)
+        return new_sres_update
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    
+    
 # Update updates entry
 @router.put("/updates/{update_id}", response_model=SresUpdateBase)
-def update_sres_update(
+def modify_sres_update_entry(
     update_id: int,
     update_sres_update: sres_requests.UpdateSresUpdate,
     sres_service: SresUpdatesService = Depends(get_sres_update_service),

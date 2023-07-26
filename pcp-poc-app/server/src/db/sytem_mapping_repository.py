@@ -51,6 +51,10 @@ class SystemMappingUpdatesRepository:
     def create_new_update(self, new_entry: CreateSystemMapUpdate):
         sys_map_db_obj = SystemMappingUpdates(**new_entry.model_dump())
 
+        # check if an entry already exists 
+        search_db_obj = self.db.query(SystemMappingUpdates).filter(SystemMappingUpdates.hydraulic_system_name == sys_map_db_obj.hydraulic_system_name).all()
+        if len(search_db_obj) > 0:
+            raise ValueError(f"An entry already exists for Hydraulic System Name: {sys_map_db_obj.hydraulic_system_name}")
         self.db.add(sys_map_db_obj)
         self.db.flush()
         self.db.commit()

@@ -1,8 +1,10 @@
-from fastapi import APIRouter, Depends
-from api.dependencies import get_contact_tank_service, get_contact_tank_update_service
+from fastapi import APIRouter, Depends, HTTPException
+from api.dependencies import get_contact_tank_service, get_contact_tank_update_service,get_audit_log_service
 from api.requests import contact_tank_requests
 from services.contact_tank_service import ContactTankService, ContactTankUpdateService
 from schemas.contact_tank_schema import ContactTankCurrentBase, ContactTankUpdateBase
+from api.requests.audit_log_requests import CreateAuditRequest
+from services.audit_log_service import AuditLogService
 
 
 router = APIRouter(prefix="/contact-tanks", tags=["Contact Tanks Endpoints"])
@@ -46,6 +48,7 @@ def get_update_tank_id(
     update_tank_service: ContactTankUpdateService = Depends(
         get_contact_tank_update_service
     ),
+    audit_service: AuditLogService = Depends(get_audit_log_service),
 ):
     contact_tank_data = update_tank_service.get_by_tank_id(odmt_tank_id)
     return contact_tank_data
@@ -58,9 +61,22 @@ def create_update_entry(
     update_tank_service: ContactTankUpdateService = Depends(
         get_contact_tank_update_service
     ),
+    audit_service: AuditLogService = Depends(get_audit_log_service),
 ):
-    contact_tank_data = update_tank_service.create_new_update(create_request)
-    return contact_tank_data
+    try: 
+        new_contact_tank_update = update_tank_service.create_new_update(create_request)
+        new_audit_event = CreateAuditRequest(
+            table_altered="pcp_poc_contact_tank_updates",
+            event_type="New Contact Tank Update Entry",
+            previous_value="None",
+            updated_value="updated",
+            actor="CreateTest@testuser.com",
+            event_date=new_contact_tank_update.date_updated,
+        )
+        audit_service.create_new_event(new_audit_event)
+        return new_contact_tank_update
+    except ValueError as e: 
+        raise HTTPException(status_code=400, detail=str(e))
 
 
 # update exsiting in updates

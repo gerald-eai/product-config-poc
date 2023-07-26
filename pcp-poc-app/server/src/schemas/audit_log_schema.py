@@ -28,7 +28,6 @@ class AuditLogDB:
     actor: str
 
     def __init__(self, audit_log_db: AuditLog):
-        print("inside the db object")
         self.id = audit_log_db.id
         self.event_id = audit_log_db.event_id
         self.table_altered = audit_log_db.table_altered
@@ -37,7 +36,6 @@ class AuditLogDB:
         self.previous_value = audit_log_db.previous_value
         self.updated_value = audit_log_db.updated_value
         self.actor = audit_log_db.actor
-        print(self)
 
     def __repr__(self):
         return f"AuditLog(id={self.id}, \
