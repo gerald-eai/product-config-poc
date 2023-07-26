@@ -36,8 +36,8 @@ class SresUpdatesRepository():
         self.db.flush()
         self.db.commit()
         self.db.refresh(sres_update_db)
-
-        return sres_update_db
+        new_sres_obj = self.get_by_update_id(sres_update_db.id)
+        return new_sres_obj
 
     def modify_new_update(self, update_id: int, update_entry: UpdateSresUpdate):
         sres_db_obj = self.get_by_update_id(update_id)
