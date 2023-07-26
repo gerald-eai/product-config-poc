@@ -75,7 +75,7 @@ def create_sres_update(
         previous_value="None",
         updated_value="updated",
         actor="test@testuser.com",
-        event_date=new_sres_update.date_updated
+        event_date=new_sres_update.date_updated,
     )
     audit_service.create_new_event(new_audit_event)
     return new_sres_update
@@ -98,8 +98,8 @@ def update_sres_update(
         previous_value="previous",
         updated_value="updated",
         actor="modifier@testdomain.com",
-        event_date=modified_sres_update.date_updated
+        event_date=modified_sres_update.date_updated,
     )
     audit_service.create_new_event(update_audit_event)
-    
+
     return modified_sres_update

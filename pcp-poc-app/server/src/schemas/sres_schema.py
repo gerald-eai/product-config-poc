@@ -54,7 +54,12 @@ class Sres:
     capacity: float | None = None
     
     def __repr__(self): 
-        return f"SRES ID: {self.odmt_sres_id} Hydraulic System Name: {self.hydraulic_system_name} SRES Name: {self.sres_name} Cell Name: {self.cell_name} PI Tag Name: {self.pi_tag_name} Engineering Unit: {self.engineering_unit}"
+        return f"SRES ID: {self.odmt_sres_id} \
+            Hydraulic System Name: {self.hydraulic_system_name} \
+            SRES Name: {self.sres_name} \
+            Cell Name: {self.cell_name} \
+            PI Tag Name: {self.pi_tag_name} \
+            Engineering Unit: {self.engineering_unit}"
     
 
 class SresCurrent(Sres):     

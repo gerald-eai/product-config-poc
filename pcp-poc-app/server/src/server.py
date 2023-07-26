@@ -1,14 +1,13 @@
-from fastapi import FastAPI
-from fastapi import APIRouter
-from api.api import default_router, api_router
-from fastapi.staticfiles import StaticFiles
+from api.api import api_router, default_router
 from core.config import config as config_manager
+from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
 
 api = FastAPI()
 
 
 def initialize_fastapi_backend():
-    settings = config_manager.get_settings() 
+    settings = config_manager.get_settings()
     api.mount("/static", StaticFiles(directory="static"), name="static")
     api.include_router(default_router, tags=["default"])
     api.include_router(api_router, tags=["api"])

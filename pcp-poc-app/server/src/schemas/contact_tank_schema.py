@@ -11,7 +11,7 @@ class ContactTankBase(BaseModel):
     sres_name: str
     cell_name: str
     pi_tag_name: str
-    engineering_unit: str 
+    engineering_unit: str
 
     validated_tag: str | None = None
     operating_level: float | None = None
@@ -101,7 +101,6 @@ class ContactTankUpdateDB(ContactTank):
         self.include_SRV = tank_db.include_SRV
         self.include_WPRO = tank_db.include_WPRO
         self.date_updated = tank_db.date_updated
-        
 
     @classmethod
     def from_db(cls, tank_db: ContactTanksUpdate):

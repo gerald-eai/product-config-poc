@@ -17,7 +17,10 @@ def get_all(
     print(audit_response)
     return audit_response
 
+
 @router.get("/{event_id}", response_model=AuditLogBase)
-def get_by_event_id(event_id: str, audit_service: AuditLogService=Depends(get_audit_log_service)): 
+def get_by_event_id(
+    event_id: str, audit_service: AuditLogService = Depends(get_audit_log_service)
+):
     audit_response = audit_service.get_by_event_id(event_id)
-    return audit_response 
+    return audit_response

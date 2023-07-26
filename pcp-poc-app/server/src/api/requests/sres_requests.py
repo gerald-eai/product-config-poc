@@ -2,10 +2,11 @@ from pydantic import BaseModel
 from typing import Optional, Annotated
 from datetime import datetime
 
+
 # payload body for creating a new Sres Entry
-class CreateSresUpdate(BaseModel): 
+class CreateSresUpdate(BaseModel):
     odmt_sres_id: int
-    hydraulic_system_name: str 
+    hydraulic_system_name: str
     sres_name: str
     cell_name: str
     pi_tag_name: str
@@ -23,8 +24,9 @@ class CreateSresUpdate(BaseModel):
     engineering_unit: str
     date_updated: datetime | None = None
 
-# payload body for updating a SresUpdate entry, everything is optional apart from the id 
-class UpdateSresUpdate(BaseModel): 
+
+# payload body for updating a SresUpdate entry, everything is optional apart from the id
+class UpdateSresUpdate(BaseModel):
     id: int
     hydraulic_system_name: str | None = None
     sres_name: str | None = None

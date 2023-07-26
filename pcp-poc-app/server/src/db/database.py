@@ -2,7 +2,8 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 import os
-import sys 
+import sys
+
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(os.path.dirname(SCRIPT_DIR))
 from core.config import config as config_manager
@@ -21,12 +22,12 @@ SCHEMA = settings.AZ_DB_SCHEMA
 # connection string
 driver_host_str = f"DRIVER={{ODBC Driver 17 for SQL Server}};SERVER=localhost,1433;"
 uid_str = "DATABASE=PCP_POC_DB;UID=sa;PWD=L0ckedUp;"
-schema_str =  f"CONNECTION TIMEOUT=60;SCHEMA=DPSN_DEMO;"
+schema_str = f"CONNECTION TIMEOUT=60;SCHEMA=DPSN_DEMO;"
 connection_string = driver_host_str + uid_str + schema_str
 # two different DB_URIs, 1 for local development and another for deployed development
 DB_URI = f"mssql+pyodbc:///?odbc_connect={connection_string}"
 
-# create engine to run 
+# create engine to run
 engine = create_engine(DB_URI)
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
@@ -34,8 +35,8 @@ Base = declarative_base()
 
 
 def get_db():
-    try: 
+    try:
         db = SessionLocal()
-        yield db 
-    finally: 
+        yield db
+    finally:
         db.close()
