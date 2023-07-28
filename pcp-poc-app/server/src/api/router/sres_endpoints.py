@@ -72,11 +72,14 @@ def create_sres_update(
         # create an event based on this
         new_audit_event = CreateAuditRequest(
             table_altered="pcp_poc_sres_updates",
+            columns_altered="col1;col2;",
             event_type="New SRES Update",
-            previous_value="None",
-            updated_value="updated",
+            previous_value="None;None;",
+            updated_value="updated;updated;",
             actor="test@testuser.com",
             event_date=new_sres_update.date_updated,
+            status="pending",
+            pushed_to_live_date=None, 
         )
         audit_service.create_new_event(new_audit_event)
         return new_sres_update
@@ -97,11 +100,14 @@ def modify_sres_update_entry(
     # create an audit log event based on the update
     update_audit_event = CreateAuditRequest(
         table_altered="pcp_poc_sres_updates",
+        columns_altered="col1;col2;",
         event_type="Modified SRES Update Entry",
-        previous_value="previous",
-        updated_value="updated",
+        previous_value="prev1;prev2;",
+            updated_value="updated1;updated2;",
         actor="modifier@testdomain.com",
         event_date=modified_sres_update.date_updated,
+        status="pending",
+        pushed_to_live_date=None, 
     )
     audit_service.create_new_event(update_audit_event)
 
