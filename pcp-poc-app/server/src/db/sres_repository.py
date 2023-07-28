@@ -35,7 +35,7 @@ class SresUpdatesRepository:
     def get_all(self, skip, limit):
         return (
             self.db.query(SresUpdates)
-            .order_by(SresCurrent.id)
+            .order_by(SresUpdates.id)
             .offset(skip)
             .limit(limit)
             .all()

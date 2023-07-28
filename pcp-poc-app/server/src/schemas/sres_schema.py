@@ -17,6 +17,14 @@ class SresBase(BaseModel):
     bwl: float | None = None
     twl: float | None = None
     capacity: float | None = None
+    include_exclude: str | None = None
+    comments: str | None = None 
+    include_in_dv: int | None = None 
+    turnover_target_lower: float | None = None 
+    turnover_target_upper: float | None = None
+    sm_record_id: str | None = None 
+    validated_tag: str | None = None
+    last_modified: datetime | None = None 
         
     model_config = ConfigDict(from_attributes=True)
     
@@ -34,6 +42,13 @@ class SresUpdateBase(BaseModel):
     bwl: float | None = None
     twl: float | None = None
     capacity: float | None = None
+    include_exclude: str | None = None
+    comments: str | None = None 
+    include_in_dv: int | None = None 
+    turnover_target_lower: float | None = None 
+    turnover_target_upper: float | None = None
+    sm_record_id: str | None = None 
+    validated_tag: str | None = None
     date_updated: datetime | None = None
         
     model_config = ConfigDict(from_attributes=True)
@@ -52,6 +67,13 @@ class Sres:
     bwl: float | None = None
     twl: float | None = None
     capacity: float | None = None
+    include_exclude: str | None = None
+    comments: str | None = None 
+    include_in_dv: int | None = None 
+    turnover_target_lower: float | None = None 
+    turnover_target_upper: float | None = None
+    sm_record_id: str | None = None 
+    validated_tag: str | None = None
     
     def __repr__(self): 
         return f"SRES ID: {self.odmt_sres_id} \
@@ -72,10 +94,19 @@ class SresCurrent(Sres):
         self.cell_name = sres_db.cell_name
         self.pi_tag_name = sres_db.pi_tag_name
         self.engineering_unit = sres_db.engineering_unit
+        
         self.operating_level = sres_db.operating_level
         self.bwl = sres_db.bwl
         self.twl = sres_db.twl
         self.capacity = sres_db.capacity
+        self.comments = sres_db.comments
+        self.include_exclude = sres_db.include_exclude
+        self.include_in_dv = sres_db.include_in_dv
+        self.turnover_target_lower = sres_db.turnover_target_lower
+        self.turnover_target_upper = sres_db.turnover_target_upper
+        self.sm_record_id = sres_db.sm_record_id
+        self.validated_tag = sres_db.validated_tag
+        
         self.last_modified = sres_db.last_modified
 
     @classmethod
@@ -96,10 +127,18 @@ class SresUpdate(Sres):
         self.cell_name = sres_db.cell_name
         self.pi_tag_name = sres_db.pi_tag_name
         self.engineering_unit = sres_db.engineering_unit
+
         self.operating_level = sres_db.operating_level
         self.bwl = sres_db.bwl
         self.twl = sres_db.twl
         self.capacity = sres_db.capacity
+        self.comments = sres_db.comments
+        self.include_exclude = sres_db.include_exclude
+        self.include_in_dv = sres_db.include_in_dv
+        self.turnover_target_lower = sres_db.turnover_target_lower
+        self.turnover_target_upper = sres_db.turnover_target_upper
+        self.sm_record_id = sres_db.sm_record_id
+        self.validated_tag = sres_db.validated_tag
         self.date_updated = sres_db.date_updated
         
     @classmethod
