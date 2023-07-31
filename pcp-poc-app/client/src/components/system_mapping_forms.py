@@ -1,6 +1,5 @@
 # Form Components for Sres 
 import streamlit as st 
-from pydantic import BaseModel 
 import schemas.system_mapping_request as SystemMapRequest
 from services.api import ApiConsumer
 
@@ -73,14 +72,19 @@ class SystemMapForm():
         if submit_form: 
             #  try to write the data over the request
             try: 
-                st.write("Submitting Data")
                 # :TODO: Let's make a comparison of the data and only update the necessary fields
+                form_inputs['id'] = default_vals['id']
+                for key, value in form_inputs.items(): 
+                    if key == 'id' or key == 'hydraulic_system_name':
+                        continue
+                    elif value == default_vals[key]:
+                        form_inputs[key] = None
                 edit_staged_sys_map  = SystemMapRequest.EditStagedEntry(**form_inputs)
                 print(f"Edit Staged Sys Map Entry: {edit_staged_sys_map}")
                 st.info("Refresh to view updated data")
                 # make a request to post the data 
-                # response = self.api_session.edit_staged_entry('system-mapping/updates/', req_body=edit_staged_sys_map)
-                # print(f"Here is your damned response! {response}")
+                response = self.api_session.edit_staged_entry(f'system-mapping/updates/{edit_staged_sys_map.id}', req_body=edit_staged_sys_map)
+                print(f"Here is your damned response! {response}")
             
             except Exception as e:
                 st.error(f"Unable to submit the form! Issue is {e}")
