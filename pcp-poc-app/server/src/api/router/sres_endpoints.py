@@ -67,6 +67,7 @@ def create_sres_update(
     sres_service: SresUpdatesService = Depends(get_sres_update_service),
     audit_service: AuditLogService = Depends(get_audit_log_service),
 ):
+    print(f"Create New Sres Request: \n{create_sres_update}")
     try: 
         new_sres_update = sres_service.create_new_update(create_sres_update)
         # create an event based on this
