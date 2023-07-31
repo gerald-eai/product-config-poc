@@ -42,6 +42,7 @@ def fetch_all_updates(
     sres_service: SresUpdatesService = Depends(get_sres_update_service),
 ):
     sres_data = sres_service.get_all(skip, limit)
+    print('sres data: \n', sres_data)
     return sres_data
 
 

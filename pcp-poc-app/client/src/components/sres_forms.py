@@ -1,6 +1,5 @@
 # Form Components for Sres 
 import streamlit as st 
-from pydantic import BaseModel 
 import schemas.sres_request as SresRequest 
 from services.api import ApiConsumer
 
@@ -9,6 +8,7 @@ class SresForm():
     
     def __init__(self, base_url): 
         self.api_session = ApiConsumer(base_url=base_url)
+    
     def base_form(self, default_vals: dict):
         st.info(f"You are editing data for the following SRES: {default_vals['sres_name']}")
         # render our form widget
@@ -62,6 +62,7 @@ class SresForm():
         if submit_form: 
             try: 
                 form_inputs['include_in_dv'] = 1 if form_inputs['include_in_dv'] == 'Yes' else 0
+                
                 create_sres_update = SresRequest.CreateNewLiveEntry(**form_inputs)
                 print('Newly Created SRES Model\n', create_sres_update)
                 for key, value in form_inputs.items(): 
@@ -80,18 +81,21 @@ class SresForm():
         if submit_form: 
             try: 
                 form_inputs['include_in_dv'] = 1 if form_inputs['include_in_dv'] == 'Yes' else 0
+                form_inputs['id'] = default_vals['id']
                 for key, value in form_inputs.items(): 
                     if key == 'id' or key == 'odmt_sres_id' or key == 'hydraulic_system_name':
+                        print("Hahaha Skip these")
                         continue
                     elif value == default_vals[key]:
                         form_inputs[key] = None
-                        
+                print(f"Trimmed Form Input: {form_inputs}")      
                 edit_staged_entry = SresRequest.UpdateStagedEntry(**form_inputs)
                 print('Updated SRES Model\n', edit_staged_entry)
                 
                 # run the API that creates the entry
-                # response = self.api_session.edit_staged_entry(endpoint=f'sres/updates/{edit_staged_entry.id}', req_body=edit_staged_entry)
-                # print(f"Here is your response: {response}")
+                response = self.api_session.edit_staged_entry(endpoint=f'sres/updates/{str(int(edit_staged_entry.id))}', req_body=edit_staged_entry)
+                print(f"Here is your response: {response}")
+                
             except Exception as E: 
                 print(f"Error: {E}")
                 st.error(f"Error Occurred: {E}")

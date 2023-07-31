@@ -27,7 +27,6 @@ def load_data(prefix: str, base_url: str, params: dict) -> pd.DataFrame:
 def main(): 
     st.title("Update one of the entries in the Live Table")
     base_url = "http://localhost:8000/"
-    api_client = ApiConsumer(base_url=base_url)
     
     sres_tab, tanks_tab, sysmap_tab = st.tabs(["SRES", "Contact Tanks", "System Mapping"]) 
     # our data is obtained from a dataframe

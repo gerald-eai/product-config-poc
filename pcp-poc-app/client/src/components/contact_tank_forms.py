@@ -1,6 +1,5 @@
 # Form Components for Sres 
 import streamlit as st 
-from pydantic import BaseModel 
 import schemas.contact_tank_request as ContactTankRequest
 from services.api import ApiConsumer
 
@@ -70,14 +69,12 @@ class ContactTankForm():
                 edit_staged_ctanks = ContactTankRequest.CreateNewLiveEntry(**form_inputs)
                 print('Updated Contact Tanks Model\n', edit_staged_ctanks)
                 # run the API that creates the entry
-                response = self.api_session.update_existing_entry(endpoint='contact-tanks/live/', req_body=edit_staged_ctanks)
+                response = self.api_session.create_new_entry(endpoint='contact-tanks/live/', req_body=edit_staged_ctanks)
                 print(f"Here is your response: {response}")
             except Exception as E: 
                 print(f"Error: {E}")
                 st.error(f"Error Occurred: {E}")
         
-        pass 
-
     def edit_staged_entry_form(self, default_vals: dict): 
         st.info(f"You are editing data for the following Staged Contact Tank Update Id: {default_vals['id']}")
         edit_staged_entry_form, form_inputs = self.base_form(default_vals=default_vals)
@@ -89,17 +86,16 @@ class ContactTankForm():
                 form_inputs['include_SDSR'] = 1 if form_inputs['include_SDSR'] == 'Yes' else 0
                 form_inputs['include_WPRO'] = 1 if form_inputs['include_WPRO'] == 'Yes' else 0
                 form_inputs['include_SRV'] = 1 if form_inputs['include_SRV'] == 'Yes' else 0
+                form_inputs['id'] = default_vals['id']
                 for key, value in form_inputs.items():
                     if key == 'id' or key == 'odmt_contact_tank_id' or key == 'hydraulic_system_name':
                         continue
                     elif value == default_vals[key]:
                         form_inputs[key] = None
-            
                 edit_staged_ctanks = ContactTankRequest.EditStagedEntry(**form_inputs)
-                print('Updated Contact Tanks Model\n', edit_staged_ctanks)
                 # run the API that creates the entry
-                # response = self.api_session.update_existing_entry(endpoint='contact-tanks/updates/', req_body=edit_staged_ctanks)
-                # print(f"Here is your response: {response}")
+                response = self.api_session.edit_staged_entry(endpoint=f'contact-tanks/updates/{edit_staged_ctanks.id}', req_body=edit_staged_ctanks)
+                print(f"!!!!!!!!!!!!Here is your response!!!!!!!!!!!! \n{response}")
             except Exception as E: 
                 print(f"Error: {E}")
                 st.error(f"Error Occurred: {E}")
