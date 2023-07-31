@@ -29,9 +29,9 @@ class CreateNewStagedEntry(BaseRequest):
     date_updated: datetime | None = None
     
 # Base Class
-class UpdateStagedEntry(BaseModel): 
+class EditStagedEntry(BaseModel): 
     id: int # required primary key
-    odmt_contact_id: int 
+    odmt_contact_tank_id: int 
     hydraulic_system_name: str
     sres_name: str | None = None 
     cell_name: str | None = None 

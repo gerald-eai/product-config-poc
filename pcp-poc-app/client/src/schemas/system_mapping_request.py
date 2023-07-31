@@ -11,7 +11,7 @@ class CreateNewLiveEntry(BaseModel):
     odmt_area_id: int
     last_modified: datetime | None = None
 
-class CreateNewStagedUpdate(BaseModel): 
+class CreateNewStagedEntry(BaseModel): 
      # create an entry in the staging table
     hydraulic_system_name: str
     area_name: str 
@@ -22,7 +22,7 @@ class CreateNewStagedUpdate(BaseModel):
     def __repr__(self) -> str:
         return super().__repr__()
 
-class EditStagedUpdate(BaseModel): 
+class EditStagedEntry(BaseModel): 
     # Edit an entry in the staged table
     id: int 
     hydraulic_system_name: str
