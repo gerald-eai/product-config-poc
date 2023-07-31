@@ -32,11 +32,22 @@ class ApiConsumer():
     
     def create_new_entry(self, endpoint: str, params: Any):
         # what are the entries that will be created 
+        
         pass 
     
-    def update_existing_entry():
-        pass 
-
+    def update_existing_entry(self, endpoint: str, req_body: Any):
+        if req_body: 
+            print(f"Request Body: {req_body.dict()}")
+            response = requests.post(self.base_url + endpoint, json=req_body.dict())
+        if response.status_code==200: 
+            return response.json()
+        else: 
+            raise convert_json_to_df(response.raise_for_status())
+    
+    def edit_staged_entry(self, endpoint: str, params: Any):
+        pass
+    
+    
 def main(): 
     print("Main in the API consumer!")
     

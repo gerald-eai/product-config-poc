@@ -63,6 +63,7 @@ def create_update_entry(
     ),
     audit_service: AuditLogService = Depends(get_audit_log_service),
 ):
+    print(f"Here is the request submitted: {create_request}")
     try: 
         new_contact_tank_update = update_tank_service.create_new_update(create_request)
         new_audit_event = CreateAuditRequest(
@@ -72,10 +73,14 @@ def create_update_entry(
             updated_value="updated",
             actor="CreateTest@testuser.com",
             event_date=new_contact_tank_update.date_updated,
+            columns_altered="col1;col2;", 
+            status="pending",
+            pushed_to_live_date=None, 
         )
         audit_service.create_new_event(new_audit_event)
         return new_contact_tank_update
     except ValueError as e: 
+        print(f"Error: {e}")
         raise HTTPException(status_code=400, detail=str(e))
 
 

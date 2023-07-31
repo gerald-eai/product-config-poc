@@ -20,4 +20,4 @@ api: FastAPI = initialize_fastapi_backend()
 if __name__ == "__main__":
     import uvicorn
 
-    uvicorn.run("server:api", host="0.0.0.0", port=8000, reload=True)
+    uvicorn.run("server:api", host="127.0.0.1", port=8000, reload=True)

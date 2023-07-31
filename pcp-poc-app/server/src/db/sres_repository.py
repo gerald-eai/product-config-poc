@@ -60,7 +60,7 @@ class SresUpdatesRepository:
             raise ValueError(f"An entry already exists for sres id {sres_update_db.odmt_sres_id}")
         
         self.db.add(sres_update_db)
-        self.db.flush()
+        # self.db.flush()
         self.db.commit()
         self.db.refresh(sres_update_db)
         new_sres_obj = self.get_by_update_id(sres_update_db.id)

@@ -66,8 +66,11 @@ def create_update_entry(
     ),
     audit_service: AuditLogService = Depends(get_audit_log_service),
 ):
+    # print(f"System Mapping Update Request: \n{create_request}")
     try: 
+        print(f"System Mapping Update Request: \n{create_request}")
         new_sys_map_entry = sys_map_update_service.create_new_update(create_request)
+        print(f"System Mapping Update Response: \n{new_sys_map_entry}")
         # create an event based on this
         new_audit_event = CreateAuditRequest(
             table_altered="pcp_poc_system_mapping_updates",
@@ -76,6 +79,9 @@ def create_update_entry(
             updated_value="updated",
             actor="CreateTest@testuser.com",
             event_date=new_sys_map_entry.date_updated,
+            columns_altered="col1;col2;", 
+            status="Staged", 
+            pushed_to_live_date=None
         )
         audit_service.create_new_event(new_audit_event)
         return new_sys_map_entry
