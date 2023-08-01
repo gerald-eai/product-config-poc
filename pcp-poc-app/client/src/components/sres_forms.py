@@ -2,24 +2,32 @@
 import streamlit as st 
 import schemas.sres_request as SresRequest 
 from services.api import ApiConsumer
-
+from datetime import datetime 
 
 class SresForm(): 
     
     def __init__(self, base_url): 
         self.api_session = ApiConsumer(base_url=base_url)
     
+    def validate_input(self, input_type, val):
+        if isinstance(val, str): 
+            # can we check that this is not ""
+            if val == "" or val == None: 
+                raise ValueError(f"Input {input_type} cannot be empty")
+        else: 
+            if val == None: 
+                raise ValueError(f"Input {input_type} cannot be empty")
+
     def base_form(self, default_vals: dict):
-        st.info(f"You are editing data for the following SRES: {default_vals['sres_name']}")
+        
         # render our form widget
         form = st.form(key='sres_form', clear_on_submit=False)
         # create keys required for the form component
         keys = list(default_vals.keys())
         form_inputs = dict.fromkeys(keys, None) # create emtpy dict to store the user's input
-        print("Dictionary is this: \n", default_vals)
-        form_inputs['sres_name'] = form.text_input("SRES Name", default_vals['sres_name'])
+        
         form_inputs['hydraulic_system_name'] = form.text_input("Hydraulic System Name", default_vals['hydraulic_system_name'])
-        form_inputs['odmt_sres_id'] = form.number_input("ODMT SRES ID", default_vals['odmt_sres_id'])
+        form_inputs['sres_name'] = form.text_input("SRES Name", default_vals['sres_name'])
         form_inputs['cell_name'] = form.text_input("Cell Name", default_vals['cell_name'])
         form_inputs["pi_tag_name"] = form.text_input("PI Tag Name", default_vals["pi_tag_name"])
         form_inputs['operating_level'] = form.number_input("Operating Level", default_vals['operating_level'])
@@ -36,14 +44,41 @@ class SresForm():
         form_inputs['engineering_unit'] = form.text_input("Engineering Unit", default_vals['engineering_unit'])
         
         return form, form_inputs
+
+    def create_current_entry_form(self, default_vals: dict): 
+        st.info(f"You are creating a new entry in the live SRES Table")
+        form, form_inputs = self.base_form(default_vals=default_vals)
         
+        submit_form = form.form_submit_button("Create New Sres Entry")
+        if submit_form: 
+            try: 
+                form_inputs['include_in_dv'] = 1 if form_inputs['include_in_dv'] == 'Yes' else 0
+                form_inputs['last_modified'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                create_sres_update = SresRequest.CreateNewLiveEntry(**form_inputs)
+                print('Newly Created SRES Model\n', create_sres_update)
+                for key, value in form_inputs.items(): 
+                    if key == 'odmt_sres_id' or 'last_modified': 
+                        continue
+                    else: 
+                        print(f"{key}:{value}")
+                        self.validate_input(input_type=key, val=value)
+                # run the API that creates the entry
+                response = self.api_session.create_new_entry(endpoint='sres/live', req_body=create_sres_update)
+                print(f"Here is your response: {response}")
+            
+            except Exception as E: 
+                print(f"Error: {E}")
+                st.error(f"Error Occurred: {E}")
+                
     def create_staged_entry_form(self, default_vals: dict): 
+        st.info(f"You are editing data for the following SRES: {default_vals['sres_name']}")
         form, form_inputs = self.base_form(default_vals=default_vals)
         
         submit_form = form.form_submit_button("Update Entry")
         if submit_form: 
             try: 
                 form_inputs['include_in_dv'] = 1 if form_inputs['include_in_dv'] == 'Yes' else 0
+                form_inputs['odmt_sres_id'] = default_vals['odmt_sres_id']
                 create_sres_update = SresRequest.CreateNewStagedEntry(**form_inputs)
                 print('Newly Created SRES Model\n', create_sres_update)
                 for key, value in form_inputs.items(): 
@@ -54,27 +89,9 @@ class SresForm():
             except Exception as E: 
                 print(f"Error: {E}")
                 st.error(f"Error Occurred: {E}")
-
-    def create_current_entry_form(self, default_vals: dict): 
-        form, form_inputs = self.base_form(default_vals=default_vals)
-        
-        submit_form = form.form_submit_button("Update Entry")
-        if submit_form: 
-            try: 
-                form_inputs['include_in_dv'] = 1 if form_inputs['include_in_dv'] == 'Yes' else 0
                 
-                create_sres_update = SresRequest.CreateNewLiveEntry(**form_inputs)
-                print('Newly Created SRES Model\n', create_sres_update)
-                for key, value in form_inputs.items(): 
-                    print(f"{key}:{value}")
-                # run the API that creates the entry
-                response = self.api_session.create_new_entry(endpoint='sres/live/', req_body=create_sres_update)
-                print(f"Here is your response: {response}")
-            except Exception as E: 
-                print(f"Error: {E}")
-                st.error(f"Error Occurred: {E}")
-
     def edit_staged_entry_form(self, default_vals: dict): 
+        st.info(f"You are editing data for the following SRES: {default_vals['sres_name']}")
         form, form_inputs = self.base_form(default_vals=default_vals)
         
         submit_form = form.form_submit_button("Update Entry")
@@ -82,6 +99,7 @@ class SresForm():
             try: 
                 form_inputs['include_in_dv'] = 1 if form_inputs['include_in_dv'] == 'Yes' else 0
                 form_inputs['id'] = default_vals['id']
+                form_inputs['odmt_sres_id'] = default_vals['odmt_sres_id']
                 for key, value in form_inputs.items(): 
                     if key == 'id' or key == 'odmt_sres_id' or key == 'hydraulic_system_name':
                         print("Hahaha Skip these")

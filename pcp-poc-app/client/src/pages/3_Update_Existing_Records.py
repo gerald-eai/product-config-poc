@@ -37,6 +37,7 @@ def main():
         save_session_state({'sres': live_sres_data})
         
         if refresh_btn: 
+            st.session_state['sres'] = None
             live_sres_data = load_data("sres/live", base_url=base_url, params={'skip': 0, 'limit': 500})
             save_session_state({'sres': live_sres_data})
             
@@ -54,6 +55,7 @@ def main():
         ctanks_refresh = st.button('Refresh Contact Tanks :arrows_counterclockwise:')
         
         if ctanks_refresh: 
+            st.session_state['contact_tanks'] = None
             live_tanks_data = load_data("contact-tanks/live", base_url=base_url, params={'skip': 0, 'limit': 150})
             save_session_state({'contact_tanks': live_tanks_data})
         
@@ -70,6 +72,7 @@ def main():
         save_session_state({'system_mapping': live_sysmap_data})
         
         if refresh_btn: 
+            st.session_state['system_mapping'] = None
             live_sysmap_data = load_data("system-mapping/live", base_url=base_url, params={'skip': 0, 'limit': 50})
             save_session_state({'system_mapping': live_sysmap_data})
         
