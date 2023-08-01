@@ -1,7 +1,7 @@
 from db.models.sres import SresCurrent, SresUpdates
 from sqlalchemy.orm import Session
 from sqlalchemy import func
-from api.requests.sres_requests import CreateSresUpdate, UpdateSresUpdate
+from api.requests.sres_requests import CreateNewSresLive, CreateSresUpdate, UpdateSresUpdate
 
 
 class SresRepository:
@@ -25,7 +25,17 @@ class SresRepository:
             .filter(SresCurrent.odmt_sres_id == sres_id)
             .first()
         )
-
+        
+    def create_new_entry(self, new_obj: CreateNewSresLive): 
+        sres_current_db = SresCurrent(**new_obj.model_dump())
+        print(f"Sres Current DB Obj: {sres_current_db}")
+        self.db.add(sres_current_db)
+        self.db.commit()
+        self.db.refresh(sres_current_db)
+        new_sres_obj = self.get_by_id(sres_current_db.odmt_sres_id)
+        
+        return new_sres_obj
+    
 
 class SresUpdatesRepository:
     # repository for sres updates, this is explicitly for updates therefore it only performs create and update operations

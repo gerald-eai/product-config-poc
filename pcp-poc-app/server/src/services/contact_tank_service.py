@@ -5,6 +5,7 @@ from db.contact_tanks_repository import (
     ContactTankUpdatesRepository,
 )
 from api.requests.contact_tank_requests import (
+    CreateContactTankLive, 
     CreateContactTankRequest,
     UpdateContactTankRequest,
 )
@@ -23,6 +24,11 @@ class ContactTankService:
         query = self.repository.get_by_tank_id(tank_id)
         return ContactTankCurrentDB.from_db(query)
 
+    def create_new_entry(self, new_tank: CreateContactTankLive):
+        new_ctank_obj = self.repository.create_new_entry(new_tank)
+        return ContactTankCurrentDB.from_db(new_ctank_obj)
+    
+    
 
 class ContactTankUpdateService:
     def __init__(self, db: Session):

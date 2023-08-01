@@ -2,6 +2,7 @@ from db.models.contact_tanks import ContactTanksCurrent, ContactTanksUpdate
 from sqlalchemy.orm import Session
 from sqlalchemy import func
 from api.requests.contact_tank_requests import (
+    CreateContactTankLive, 
     CreateContactTankRequest,
     UpdateContactTankRequest,
 )
@@ -28,7 +29,16 @@ class ContactTankRepository:
             .first()
         )
 
-    pass
+    def create_new_entry(self, new_obj: CreateContactTankLive): 
+        new_ctank_db = ContactTanksCurrent(**new_obj.model_dump())
+        self.db.add(new_ctank_db)
+        self.db.flush()
+        self.db.commit()
+        self.db.refresh(new_ctank_db)
+        
+        new_ctank_obj = self.get_by_tank_id(new_ctank_db.odmt_contact_tank_id)
+        
+        return new_ctank_obj
 
 
 class ContactTankUpdatesRepository:

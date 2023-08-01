@@ -7,11 +7,13 @@ class SresCurrent(Base):
     __tablename__="pcp_poc_sres"
     __table_args__={"schema": "DPSN_DEMO"}
     
-    odmt_sres_id=Column(Integer, primary_key=True, index=True)
+    odmt_sres_id=Column(Integer, primary_key=True, autoincrement=True, index=True)
     hydraulic_system_name=Column(String, nullable=False)
     sres_name=Column(String, nullable=False)
     cell_name=Column(String, nullable=False)
     pi_tag_name =Column(String, nullable=False)
+    engineering_unit =Column(String, nullable=False)
+    
     operating_level =Column(Float)
     bwl =Column(Float)
     twl =Column(Float)
@@ -23,7 +25,6 @@ class SresCurrent(Base):
     turnover_target_upper =Column(Float) 
     sm_record_id =Column(String)
     validated_tag =Column(String)
-    engineering_unit =Column(String, nullable=False)
     last_modified =Column(DateTime)
     ForeignKeyConstraint(["hydraulic_system_name"], ["pcp_poc_system_mapping.hydraulic_system_name"])
     
