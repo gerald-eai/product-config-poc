@@ -30,7 +30,7 @@ def main():
     sres_tab, tanks_tab, sysmap_tab = st.tabs(["SRES", "Contact Tanks", "System Mapping"]) 
     # our data is obtained from a dataframe
     with sres_tab: 
-        st.markdown("## Current SRES Data")
+        st.markdown("## Staged SRES Updates ")
         refresh_btn = st.button('Refresh SRES Data :arrows_counterclockwise:')
         staged_sres_data = load_data("sres/updates", base_url=base_url, params={'skip': 0, 'limit': 450})
         save_session_state({'sres': staged_sres_data})
@@ -48,7 +48,7 @@ def main():
             sres_form.edit_staged_entry_form(selected_row[0])
             
     with tanks_tab: 
-        st.markdown("## Current Contact Tank Data")
+        st.markdown("## Staged Contact Tank Updates")
         staged_tanks_data = load_data("contact-tanks/updates", base_url=base_url, params={'skip': 0, 'limit': 50})
         save_session_state({'contact_tanks': staged_tanks_data})
         ctanks_refresh = st.button('Refresh Contact Tanks :arrows_counterclockwise:')
@@ -66,7 +66,7 @@ def main():
         
     with sysmap_tab: 
         refresh_btn = st.button('Refresh Sys Map Data :arrows_counterclockwise:')
-        st.markdown("## Current System Mapping Data")
+        st.markdown("## Staged System Mapping Updates")
         staged_sysmap_data = load_data("system-mapping/updates", base_url=base_url, params={'skip': 0, 'limit': 52})
         save_session_state({'system_mapping': staged_sysmap_data})
         

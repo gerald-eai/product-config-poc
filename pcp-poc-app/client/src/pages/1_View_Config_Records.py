@@ -25,25 +25,20 @@ def main():
     with sres_tab: 
         st.markdown("## SRES Data")
         # render the Sres Dataframe
-        # request_sres_button = st.button("Request SRES Data")
-        # if request_sres_button: 
         render_live_updates_tables(api_consumer, "sres", {'skip': 0, 'limit': 375})
             
             
     with tanks_tab: 
         st.markdown("## Contact Tanks")
-        # request_contact_tanks_button = st.button("Request Contact Tanks Data")
         # if request_contact_tanks_button: 
         render_live_updates_tables(api_consumer, "contact-tanks", {'skip': 0, 'limit':50})
             
     with sys_map_tab: 
         st.markdown("## System Mapping")
-        # request_sys_maps_button = st.button("Request System Mapping Data")
         # if request_sys_maps_button:
         render_live_updates_tables(api_consumer, "system-mapping", {'skip': 0, 'limit':60})
     
     st.divider()
-    st.text("And that's all we've got!!!")
     
     
 if __name__ == "__main__": 
