@@ -2,6 +2,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import func
 from db.models.system_mapping import SystemMappingCurrent, SystemMappingUpdates
 from api.requests.system_mapping_requests import (
+    CreateNewSystemMapLive,
     CreateSystemMapUpdate,
     UpdateSystemMapUpdate,
 )
@@ -27,6 +28,21 @@ class SystemMappingRepository:
             .first()
         )
 
+    def create_new_entry(self, new_obj: CreateNewSystemMapLive): 
+        sysmap_current_db = SystemMappingCurrent(**new_obj.model_dump())
+        
+        existing_entry = self.db.query(SystemMappingCurrent).filter(SystemMappingCurrent.hydraulic_system_name == sysmap_current_db.hydraulic_system_name).all()
+        
+        if len(existing_entry) > 0:
+            raise ValueError(f"An entry already exists for Hydraulic System Name: {sysmap_current_db.hydraulic_system_name}")
+        
+        self.db.add(sysmap_current_db)
+        self.db.commit()
+        self.db.refresh(sysmap_current_db)
+        new_db_obj = self.get_by_hydraulic_name(sysmap_current_db.hydraulic_system_name)
+        
+        return new_db_obj
+    
 
 class SystemMappingUpdatesRepository:
     def __init__(self, db: Session):

@@ -2,7 +2,7 @@ from db.models.sres import SresCurrent, SresUpdates
 from sqlalchemy.orm import Session
 from db.sres_repository import SresRepository, SresUpdatesRepository
 from schemas.sres_schema import SresCurrent, SresUpdate
-from api.requests.sres_requests import CreateSresUpdate, UpdateSresUpdate
+from api.requests.sres_requests import CreateNewSresLive, CreateSresUpdate, UpdateSresUpdate
 
 
 class SresService:
@@ -21,7 +21,10 @@ class SresService:
     def get_by_id(self, sres_id: int):
         query = self.repository.get_by_id(sres_id=sres_id)
         return SresCurrent.from_db(query)
-
+    
+    def create_new_entry(self, new_obj: CreateNewSresLive):
+        new_entry = self.repository.create_new_entry(new_obj)
+        return SresCurrent.from_db(new_entry)
 
 # create service for updating the contents of the SRES Updates table
 class SresUpdatesService:

@@ -1,10 +1,15 @@
 from fastapi import APIRouter, Depends, HTTPException
-from api.dependencies import get_contact_tank_service, get_contact_tank_update_service,get_audit_log_service
+from api.dependencies import (
+    get_contact_tank_service,
+    get_contact_tank_update_service,
+    get_audit_log_service,
+)
 from api.requests import contact_tank_requests
 from services.contact_tank_service import ContactTankService, ContactTankUpdateService
 from schemas.contact_tank_schema import ContactTankCurrentBase, ContactTankUpdateBase
 from api.requests.audit_log_requests import CreateAuditRequest
 from services.audit_log_service import AuditLogService
+from datetime import datetime
 
 
 router = APIRouter(prefix="/contact-tanks", tags=["Contact Tanks Endpoints"])
@@ -27,6 +32,32 @@ def get_current_by_name(
 ):
     contact_tank_data = contact_tank_service.get_by_tank_id(odmt_contact_tank_id)
     return contact_tank_data
+
+
+@router.post("/live", response_model=ContactTankCurrentBase)
+def create_new_entry(
+    create_request: contact_tank_requests.CreateContactTankLive,
+    create_tank_service: ContactTankService = Depends(get_contact_tank_service),
+    audit_service: AuditLogService = Depends(get_audit_log_service),
+):
+    print(f"Here is the request submitted: {create_request}")
+    try:
+        new_contact_tank_obj = create_tank_service.create_new_entry(create_request)
+        new_audit_event = CreateAuditRequest(
+            table_altered="pcp_poc_contact_tanks",
+            event_type="New Current Contact Tank Entry",
+            previous_value="None;None;None;None;None;None",
+            actor="GearFourth@raughtale.com",
+            event_date=datetime.now(),
+            columns_altered="odmt_contact_tank_id;hydraulic_system_name;sres_name;cell_name;pi_tag_name;engineering_unit",
+            updated_value=f"{new_contact_tank_obj.odmt_contact_tank_id};{new_contact_tank_obj.hydraulic_system_name};{new_contact_tank_obj.sres_name};{new_contact_tank_obj.cell_name};{new_contact_tank_obj.pi_tag_name};{new_contact_tank_obj.engineering_unit}",
+            status="Added to Live",
+            pushed_to_live_date=datetime.now(),
+        )
+        audit_service.create_new_event(new_audit_event)
+        return new_contact_tank_obj
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
 
 
 # read from updates
@@ -64,7 +95,7 @@ def create_update_entry(
     audit_service: AuditLogService = Depends(get_audit_log_service),
 ):
     print(f"Here is the request submitted: {create_request}")
-    try: 
+    try:
         new_contact_tank_update = update_tank_service.create_new_update(create_request)
         new_audit_event = CreateAuditRequest(
             table_altered="pcp_poc_contact_tank_updates",
@@ -73,13 +104,13 @@ def create_update_entry(
             updated_value="updated",
             actor="CreateTest@testuser.com",
             event_date=new_contact_tank_update.date_updated,
-            columns_altered="col1;col2;", 
+            columns_altered="col1;col2;",
             status="pending",
-            pushed_to_live_date=None, 
+            pushed_to_live_date=None,
         )
         audit_service.create_new_event(new_audit_event)
         return new_contact_tank_update
-    except ValueError as e: 
+    except ValueError as e:
         print(f"Error: {e}")
         raise HTTPException(status_code=400, detail=str(e))
 

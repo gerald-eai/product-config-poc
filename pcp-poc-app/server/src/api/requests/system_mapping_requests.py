@@ -2,7 +2,15 @@ from pydantic import BaseModel
 from typing import Optional, Annotated
 from datetime import datetime
 
-
+class CreateNewSystemMapLive(BaseModel): 
+    hydraulic_system_name: str
+    area_name: str
+    region_name: str 
+    odmt_area_id: int
+    
+    comments: str | None = None
+    last_modified: datetime | None = None
+    
 class CreateSystemMapUpdate(BaseModel):
     hydraulic_system_name: str
     area_name: str | None = None 

@@ -1,4 +1,3 @@
-# from db.models.system_mapping import SystemMappingCurrent, SystemMappingUpdates
 from sqlalchemy.orm import Session
 from db.sytem_mapping_repository import (
     SystemMappingRepository,
@@ -6,6 +5,7 @@ from db.sytem_mapping_repository import (
 )
 from schemas.system_mapping_schema import SystemMappingCurrent, SystemMappingUpdate
 from api.requests.system_mapping_requests import (
+    CreateNewSystemMapLive,
     CreateSystemMapUpdate,
     UpdateSystemMapUpdate,
 )
@@ -22,7 +22,12 @@ class SystemMappingService:
     def get_by_hydraulic_name(self, hydraulic_name: str):
         query = self.repository.get_by_hydraulic_name(hydraulic_name)
         return SystemMappingCurrent.from_db(query)
-
+    
+    def create_new_entry(self, new_sys_map: CreateNewSystemMapLive):
+        new_sys_map_obj = self.repository.create_new_entry(new_obj=new_sys_map)
+        return SystemMappingCurrent.from_db(new_sys_map_obj)
+    
+        
 
 class SystemMappingUpdateService:
     def __init__(self, db: Session):
