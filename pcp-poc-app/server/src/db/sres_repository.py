@@ -28,6 +28,7 @@ class SresRepository:
         
     def create_new_entry(self, new_obj: CreateNewSresLive): 
         sres_current_db = SresCurrent(**new_obj.model_dump())
+        sres_current_db.last_modified = func.now()
         print(f"Sres Current DB Obj: {sres_current_db}")
         self.db.add(sres_current_db)
         self.db.commit()

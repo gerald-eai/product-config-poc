@@ -44,6 +44,7 @@ class SystemMapForm():
             try: 
                 st.write("Submitting Data")
                 form_inputs['last_modified'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                
                 # :TODO: Let's make a comparison of the data and only update the necessary fields
                 create_live_sys_map = SystemMapRequest.CreateNewLiveEntry(**form_inputs)
                 print(f"Create New Current Request: {create_live_sys_map}")

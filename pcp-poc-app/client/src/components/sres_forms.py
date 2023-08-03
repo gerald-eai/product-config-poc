@@ -12,7 +12,7 @@ class SresForm():
     def validate_input(self, input_type, val):
         if isinstance(val, str): 
             # can we check that this is not ""
-            if val == "" or val == None: 
+            if val == "" or val == None or val=="None": 
                 raise ValueError(f"Input {input_type} cannot be empty")
         else: 
             if val == None: 
@@ -53,9 +53,11 @@ class SresForm():
         if submit_form: 
             try: 
                 form_inputs['include_in_dv'] = 1 if form_inputs['include_in_dv'] == 'Yes' else 0
-                form_inputs['last_modified'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                # form_inputs['last_modified'] = None
+                # print(f"DateTime Object: {type(form_inputs['last_modified'])}")
                 create_sres_update = SresRequest.CreateNewLiveEntry(**form_inputs)
                 print('Newly Created SRES Model\n', create_sres_update)
+               
                 for key, value in form_inputs.items(): 
                     if key == 'odmt_sres_id' or 'last_modified': 
                         continue
@@ -66,7 +68,7 @@ class SresForm():
                 response = self.api_session.create_new_entry(endpoint='sres/live', req_body=create_sres_update)
                 print(f"Here is your response: {response}")
                 if (not response.empty): 
-                    st.success("Successfully edited the staged entry!")
+                    st.success("Successfully created a new live entry!")
             
             except Exception as E: 
                 print(f"Error: {E}")
@@ -81,6 +83,7 @@ class SresForm():
             try: 
                 form_inputs['include_in_dv'] = 1 if form_inputs['include_in_dv'] == 'Yes' else 0
                 form_inputs['odmt_sres_id'] = default_vals['odmt_sres_id']
+                
                 create_sres_update = SresRequest.CreateNewStagedEntry(**form_inputs)
                 print('Newly Created SRES Model\n', create_sres_update)
                 for key, value in form_inputs.items(): 
@@ -102,12 +105,12 @@ class SresForm():
         submit_form = form.form_submit_button("Update Entry")
         if submit_form: 
             try: 
+                # :TODO: validate the inputs
                 form_inputs['include_in_dv'] = 1 if form_inputs['include_in_dv'] == 'Yes' else 0
                 form_inputs['id'] = default_vals['id']
                 form_inputs['odmt_sres_id'] = default_vals['odmt_sres_id']
                 for key, value in form_inputs.items(): 
                     if key == 'id' or key == 'odmt_sres_id' or key == 'hydraulic_system_name':
-                        print("Hahaha Skip these")
                         continue
                     elif value == default_vals[key]:
                         form_inputs[key] = None
