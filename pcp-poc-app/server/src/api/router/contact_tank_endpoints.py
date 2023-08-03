@@ -53,6 +53,7 @@ def create_new_entry(
             updated_value=f"{new_contact_tank_obj.odmt_contact_tank_id};{new_contact_tank_obj.hydraulic_system_name};{new_contact_tank_obj.sres_name};{new_contact_tank_obj.cell_name};{new_contact_tank_obj.pi_tag_name};{new_contact_tank_obj.engineering_unit}",
             status="Added to Live",
             pushed_to_live_date=datetime.now(),
+            row_altered=str(new_contact_tank_obj.odmt_contact_tank_id),
         )
         audit_service.create_new_event(new_audit_event)
         return new_contact_tank_obj
@@ -107,6 +108,7 @@ def create_update_entry(
             columns_altered="col1;col2;",
             status="pending",
             pushed_to_live_date=None,
+            row_altered=str(new_contact_tank_update.odmt_contact_tank_id)
         )
         audit_service.create_new_event(new_audit_event)
         return new_contact_tank_update
@@ -120,11 +122,26 @@ def create_update_entry(
 def update_existing_entry(
     update_id: int,
     update_request: contact_tank_requests.UpdateContactTankRequest,
-    update_tank_service: ContactTankUpdateService = Depends(
-        get_contact_tank_update_service
-    ),
+    update_tank_service: ContactTankUpdateService = Depends(get_contact_tank_update_service),
+    audit_service: AuditLogService = Depends(get_audit_log_service),
 ):
-    contact_tank_data = update_tank_service.update_existing_entry(
-        update_id, update_request
-    )
-    return contact_tank_data
+    try: 
+        contact_tank_data = update_tank_service.\
+                                update_existing_entry(update_id, update_request)
+        new_audit_event = CreateAuditRequest(
+                table_altered="pcp_poc_contact_tank_updates",
+                event_type="New Contact Tank Update Entry",
+                previous_value="None",
+                updated_value="updated",
+                actor="CreateTest@testuser.com",
+                event_date=contact_tank_data.date_updated,
+                columns_altered="col1;col2;",
+                status="pending",
+                pushed_to_live_date=None,
+                row_altered=str(contact_tank_data.odmt_contact_tank_id)
+            )
+        audit_service.create_new_event(new_audit_event)
+        
+        return contact_tank_data
+    except ValueError as e: 
+        raise HTTPException(status_code=400, detail=str(e))

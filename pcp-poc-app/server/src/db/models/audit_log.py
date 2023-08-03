@@ -16,6 +16,7 @@ class AuditLog(Base):
     actor=Column(String(32))
     status=Column(String(24))
     pushed_to_live_date=Column(DateTime)
+    row_altered=Column(String(50))
     
     def __repr__(self): 
         return f"AuditLogORM(id={self.id}, event_id={self.event_id}, table_altered={self.table_altered}, event_type={self.event_type}, event_date={self.event_date}, previous_value={self.previous_value}, updated_value={self.updated_value}, actor={self.actor})"

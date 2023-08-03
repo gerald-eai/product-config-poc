@@ -15,3 +15,5 @@ class CreateAuditRequest(BaseModel):
     columns_altered: str 
     status: str 
     pushed_to_live_date: datetime | None = None
+    row_altered: str
+    

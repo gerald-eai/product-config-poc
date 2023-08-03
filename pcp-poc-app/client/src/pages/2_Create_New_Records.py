@@ -6,6 +6,9 @@ from components.system_mapping_forms import SystemMapForm
 from components.contact_tank_forms import ContactTankForm
 import components.global_components as Global
 
+def page_startup(): 
+    st.set_page_config(layout="wide")
+
 def save_session_state(data:dict):
     keys = list(data.keys())
     print(keys)
@@ -25,7 +28,7 @@ def load_data(prefix: str, base_url: str, params: dict) -> pd.DataFrame:
 
 
 def main(): 
-    st.title("Create New Records in our live table")
+    st.title("Create New Records in our Live Table")
     base_url = "http://localhost:8000/"
     
     sres_tab, tanks_tab, sysmap_tab = st.tabs(["SRES", "Contact Tanks", "System Mapping"]) 
@@ -90,4 +93,5 @@ def main():
         
         
 if __name__ == "__main__": 
+    page_startup()
     main()

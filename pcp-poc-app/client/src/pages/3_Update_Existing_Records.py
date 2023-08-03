@@ -6,7 +6,9 @@ from components.system_mapping_forms import SystemMapForm
 from components.contact_tank_forms import ContactTankForm
 import components.global_components as Global
 
-
+def page_startup(): 
+    st.set_page_config(layout="wide")
+    
 def save_session_state(data:dict):
     keys = list(data.keys())
     print(keys)
@@ -85,4 +87,5 @@ def main():
             system_map_form.create_staged_entry_form(selected_row[0])
                     
 if __name__ == "__main__": 
+    page_startup()
     main()

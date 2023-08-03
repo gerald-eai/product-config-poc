@@ -23,9 +23,9 @@ def main():
     sres_tab, tanks_tab, sys_map_tab = st.tabs(["Sres", "Contact Tanks", "System Mapping"])
     
     with sres_tab: 
-        st.markdown("## SRES Data")
+        st.markdown("## SRES")
         # render the Sres Dataframe
-        render_live_updates_tables(api_consumer, "sres", {'skip': 0, 'limit': 375})
+        render_live_updates_tables(api_consumer, "sres", {'skip': 0, 'limit': 500})
             
             
     with tanks_tab: 

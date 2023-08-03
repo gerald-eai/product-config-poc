@@ -58,6 +58,7 @@ def create_new_system_map(
             event_date=datetime.now(),
             status="Added to Live",
             pushed_to_live_date=datetime.now(),
+            row_altered=str(new_sysmap_obj.hydraulic_system_name)            
         )
         audit_service.create_new_event(new_audit_event)
         return new_sysmap_obj
@@ -99,11 +100,8 @@ def create_update_entry(
     ),
     audit_service: AuditLogService = Depends(get_audit_log_service),
 ):
-    # print(f"System Mapping Update Request: \n{create_request}")
     try:
-        print(f"System Mapping Update Request: \n{create_request}")
         new_sys_map_entry = sys_map_update_service.create_new_update(create_request)
-        print(f"System Mapping Update Response: \n{new_sys_map_entry}")
         # create an event based on this
         new_audit_event = CreateAuditRequest(
             table_altered="pcp_poc_system_mapping_updates",
@@ -113,8 +111,9 @@ def create_update_entry(
             actor="CreateTest@testuser.com",
             event_date=new_sys_map_entry.date_updated,
             columns_altered="col1;col2;",
-            status="Staged",
+            status="Pending",
             pushed_to_live_date=None,
+            row_altered=str(new_sys_map_entry.hydraulic_system_name)
         )
         audit_service.create_new_event(new_audit_event)
         return new_sys_map_entry
@@ -127,11 +126,24 @@ def create_update_entry(
 def update_existing_entry(
     update_id: int,
     update_request: system_mapping_requests.UpdateSystemMapUpdate,
-    sys_map_update_service: SystemMappingUpdateService = Depends(
-        get_sys_map_update_service
-    ),
+    sys_map_update_service: SystemMappingUpdateService = Depends(get_sys_map_update_service),
+    audit_service: AuditLogService = Depends(get_audit_log_service),
 ):
-    sys_map_data = sys_map_update_service.update_existing_entry(
-        update_id, update_request
-    )
-    return sys_map_data
+    try: 
+        sys_map_data = sys_map_update_service.update_existing_entry(update_id, update_request)
+        new_audit_event = CreateAuditRequest(
+                table_altered="pcp_poc_system_mapping_updates",
+                event_type="Edited Existing Staged Update",
+                previous_value="None",
+                updated_value="updated",
+                actor="CreateTest@testuser.com",
+                event_date=sys_map_data.date_updated,
+                columns_altered="col1;col2;",
+                status="Pending",
+                pushed_to_live_date=None,
+                row_altered=str(sys_map_data.id)
+            )
+        audit_service.create_new_event(new_audit_event)
+        return sys_map_data
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))

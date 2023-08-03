@@ -47,7 +47,7 @@ def create_new_sres(
         new_sres_obj = sres_service.create_new_entry(create_sres_request)
         print(f"New Sres Object: \n{new_sres_obj}")
         new_audit_event = CreateAuditRequest(
-            table_altered="pcp_poc_sres_updates",
+            table_altered="pcp_poc_sres",
             columns_altered="odmt_sres_id;hydraulic_system_name;sres_name;cell_name;pi_tag_name;engineering_unit",
             event_type="New SRES Entry",
             previous_value="None;None;None;None;None;None",
@@ -56,6 +56,7 @@ def create_new_sres(
             event_date=datetime.now(),
             status="Added to Live",
             pushed_to_live_date=datetime.now(),
+            row_altered=str(new_sres_obj.odmt_sres_id),   
         )
         audit_service.create_new_event(new_audit_event)
         return new_sres_obj
@@ -114,6 +115,7 @@ def create_sres_update(
             event_date=new_sres_update.date_updated,
             status="pending",
             pushed_to_live_date=None,
+            row_altered=str(new_sres_update.odmt_sres_id)
         )
         audit_service.create_new_event(new_audit_event)
         return new_sres_update
@@ -129,20 +131,24 @@ def modify_sres_update_entry(
     sres_service: SresUpdatesService = Depends(get_sres_update_service),
     audit_service: AuditLogService = Depends(get_audit_log_service),
 ):
-    modified_sres_update = sres_service.modify_update(update_id, update_sres_update)
-    print(f"Endpoint new update: {modified_sres_update}")
-    # create an audit log event based on the update
-    update_audit_event = CreateAuditRequest(
-        table_altered="pcp_poc_sres_updates",
-        columns_altered="col1;col2;",
-        event_type="Modified SRES Update Entry",
-        previous_value="prev1;prev2;",
-        updated_value="updated1;updated2;",
-        actor="modifier@testdomain.com",
-        event_date=modified_sres_update.date_updated,
-        status="pending",
-        pushed_to_live_date=None,
-    )
-    audit_service.create_new_event(update_audit_event)
+    try: 
+        modified_sres_update = sres_service.modify_update(update_id, update_sres_update)
+        print(f"Endpoint new update: {modified_sres_update}")
+        # create an audit log event based on the update
+        update_audit_event = CreateAuditRequest(
+            table_altered="pcp_poc_sres_updates",
+            columns_altered="col1;col2;",
+            event_type="Modified SRES Update Entry",
+            previous_value="prev1;prev2;",
+            updated_value="updated1;updated2;",
+            actor="modifier@testdomain.com",
+            event_date=modified_sres_update.date_updated,
+            status="pending",
+            pushed_to_live_date=None,
+            row_altered=str(modified_sres_update.id)
+        )
+        audit_service.create_new_event(update_audit_event)
 
-    return modified_sres_update
+        return modified_sres_update
+    except ValueError as e: 
+        raise HTTPException(status_code=400, detail=str(e))

@@ -65,6 +65,8 @@ class SresForm():
                 # run the API that creates the entry
                 response = self.api_session.create_new_entry(endpoint='sres/live', req_body=create_sres_update)
                 print(f"Here is your response: {response}")
+                if (not response.empty): 
+                    st.success("Successfully edited the staged entry!")
             
             except Exception as E: 
                 print(f"Error: {E}")
@@ -86,6 +88,9 @@ class SresForm():
                 # run the API that creates the entry
                 response = self.api_session.create_staged_entry(endpoint='sres/updates/new-entry', req_body=create_sres_update)
                 print(f"Here is your response: {response}")
+                if (not response.empty): 
+                    st.success("Successfully edited the staged entry!")
+
             except Exception as E: 
                 print(f"Error: {E}")
                 st.error(f"Error Occurred: {E}")
@@ -113,6 +118,8 @@ class SresForm():
                 # run the API that creates the entry
                 response = self.api_session.edit_staged_entry(endpoint=f'sres/updates/{str(int(edit_staged_entry.id))}', req_body=edit_staged_entry)
                 print(f"Here is your response: {response}")
+                if (not response.empty): 
+                    st.success("Successfully edited the staged entry!")
                 
             except Exception as E: 
                 print(f"Error: {E}")
