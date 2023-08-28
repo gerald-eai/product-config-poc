@@ -7,7 +7,8 @@ from api.dependencies import (
 )
 from services.sres_service import SresService, SresUpdatesService
 from services.audit_log_service import AuditLogService
-from schemas.sres_schema import SresBase, SresUpdateBase
+# from schemas.sres_schema import SresBase, SresUpdateBase
+from schemas.sres_schema import SresCurrent, SresUpdate
 from api.requests import sres_requests
 from api.requests.audit_log_requests import CreateAuditRequest
 from datetime import datetime
@@ -17,7 +18,7 @@ router = APIRouter(prefix="/sres", tags=["Sres endpoints"])
 
 
 # Read Operations
-@router.get("/live", response_model=list[SresBase])
+@router.get("/live", response_model=list[SresCurrent])
 def get_sres_home(
     skip: int = 0,
     limit: int = 100,
@@ -27,7 +28,8 @@ def get_sres_home(
     return sres_data
 
 
-@router.get("/live/{odmt_sres_id}", response_model=SresBase)
+# @router.get("/live/{odmt_sres_id}", response_model=SresBase)
+@router.get("/live/{odmt_sres_id}", response_model=SresCurrent)
 def get_sres_by_id(
     odmt_sres_id: int, sres_service: SresService = Depends(get_sres_service)
 ):
@@ -36,7 +38,7 @@ def get_sres_by_id(
 
 
 # create new entry in the current table
-@router.post("/live", response_model=SresBase)
+@router.post("/live", response_model=SresCurrent)
 def create_new_sres(
     create_sres_request: sres_requests.CreateNewSresLive,
     sres_service: SresService = Depends(get_sres_service),
@@ -58,6 +60,7 @@ def create_new_sres(
             pushed_to_live_date=datetime.now(),
             row_altered=str(new_sres_obj.odmt_sres_id),   
         )
+        print(f"New Audit Event: \n{new_audit_event}")
         audit_service.create_new_event(new_audit_event)
         return new_sres_obj
     
@@ -67,7 +70,7 @@ def create_new_sres(
 
 
 # read from the updates table
-@router.get("/updates", response_model=list[SresUpdateBase])
+@router.get("/updates", response_model=list[SresUpdate])
 def fetch_all_updates(
     skip: int = 0,
     limit: int = 100,
@@ -78,12 +81,12 @@ def fetch_all_updates(
     return sres_data
 
 
-@router.get("/updates/{odmt_sres_id}", response_model=list[SresUpdateBase])
+@router.get("/updates/{odmt_sres_id}", response_model=SresUpdate)
 def get_update_by_sres_id(
     odmt_sres_id: int,
     sres_service: SresUpdatesService = Depends(get_sres_update_service),
 ):
-    sres_data = sres_service.get_by_id(sres_id=odmt_sres_id)
+    sres_data = sres_service.get_by_sres_id(sres_id=odmt_sres_id)
     return sres_data
 
 
@@ -95,7 +98,7 @@ def get_update_by_sres_id(
 
 
 # Create new update entry
-@router.post("/updates/new-entry", response_model=SresUpdateBase)
+@router.post("/updates/new-entry", response_model=SresUpdate)
 def create_sres_update(
     create_sres_update: sres_requests.CreateSresUpdate,
     sres_service: SresUpdatesService = Depends(get_sres_update_service),
@@ -124,7 +127,7 @@ def create_sres_update(
 
 
 # Update updates entry
-@router.put("/updates/{update_id}", response_model=SresUpdateBase)
+@router.put("/updates/{update_id}", response_model=SresUpdate)
 def modify_sres_update_entry(
     update_id: int,
     update_sres_update: sres_requests.UpdateSresUpdate,

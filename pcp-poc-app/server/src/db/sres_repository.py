@@ -1,15 +1,15 @@
-from db.models.sres import SresCurrent, SresUpdates
-from sqlalchemy.orm import Session
-from sqlalchemy import func
 from api.requests.sres_requests import CreateNewSresLive, CreateSresUpdate, UpdateSresUpdate
 
+from schemas.sres_schema import SresCurrent, SresUpdate
+from sqlmodel import Session, func
+from typing import List
 
 class SresRepository:
     # repository for current sres data, this is explicitly for current therefore it only performs read operations
     def __init__(self, db: Session):
         self.db = db
 
-    def get_all(self, skip: int = 0, limit: int = 100):
+    def get_all(self, skip: int = 0, limit: int = 100) -> List[SresCurrent]:
         return (
             self.db.query(SresCurrent)
             .order_by(SresCurrent.odmt_sres_id)
@@ -18,7 +18,7 @@ class SresRepository:
             .all()
         )
 
-    def get_by_id(self, sres_id: int):
+    def get_by_id(self, sres_id: int) -> SresCurrent:
         # return the odmt data based on sres id
         return (
             self.db.query(SresCurrent)
@@ -26,8 +26,9 @@ class SresRepository:
             .first()
         )
         
-    def create_new_entry(self, new_obj: CreateNewSresLive): 
-        sres_current_db = SresCurrent(**new_obj.model_dump())
+    def create_new_entry(self, new_obj: CreateNewSresLive) -> SresCurrent: 
+        print(f"NEW OBJECT TO CREATE: \n{new_obj}")
+        sres_current_db = SresCurrent(**vars(new_obj))
         sres_current_db.last_modified = func.now()
         print(f"Sres Current DB Obj: {sres_current_db}")
         self.db.add(sres_current_db)
@@ -45,8 +46,8 @@ class SresUpdatesRepository:
 
     def get_all(self, skip, limit):
         return (
-            self.db.query(SresUpdates)
-            .order_by(SresUpdates.id)
+            self.db.query(SresUpdate)
+            .order_by(SresUpdate.id)
             .offset(skip)
             .limit(limit)
             .all()
@@ -54,19 +55,19 @@ class SresUpdatesRepository:
 
     def get_by_sres_id(self, sres_id: int):
         return (
-            self.db.query(SresUpdates)
-            .filter(SresUpdates.odmt_sres_id == sres_id)
+            self.db.query(SresUpdate)
+            .filter(SresUpdate.odmt_sres_id == sres_id)
             .first()
         )
 
     def get_by_update_id(self, update_id: int):
-        return self.db.query(SresUpdates).filter(SresUpdates.id == update_id).first()
+        return self.db.query(SresUpdate).filter(SresUpdate.id == update_id).first()
 
     def create_new_update(self, new_entry: CreateSresUpdate):
-        sres_update_db = SresUpdates(**new_entry.model_dump())
+        sres_update_db = SresUpdate(**vars(new_entry))
         
         # check if an entry already exists 
-        search_db_obj = self.db.query(SresUpdates).filter(SresUpdates.odmt_sres_id == sres_update_db.odmt_sres_id).all()
+        search_db_obj = self.db.query(SresUpdate).filter(SresUpdate.odmt_sres_id == sres_update_db.odmt_sres_id).all()
         if len(search_db_obj) > 0:
             raise ValueError(f"An entry already exists for sres id {sres_update_db.odmt_sres_id}")
         
@@ -83,7 +84,7 @@ class SresUpdatesRepository:
         if sres_db_obj is None:
             return None
 
-        for key, value in update_entry.model_dump().items():
+        for key, value in vars(update_entry).items():
             if value is not None:
                 setattr(sres_db_obj, key, value)
         # update the datetime

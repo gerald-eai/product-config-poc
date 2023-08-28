@@ -2,6 +2,7 @@ from sqlalchemy import Column, DateTime, Integer, String, ForeignKey, Float, For
 from sqlalchemy.orm import relationship 
 from db.database import Base 
 
+# from sqlmodel import ForeignKeyConstraint, ForeignKey, Field, Session, Integer, DateTime, String, SmallInteger, func 
 
 class SresCurrent(Base): 
     __tablename__="pcp_poc_sres"
@@ -36,11 +37,11 @@ class SresCurrent(Base):
 class SresUpdates(Base): 
     __tablename__="pcp_poc_sres_updates"
     __table_args__={"schema": "DPSN_DEMO"}
-    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
-    odmt_sres_id = Column(Integer, nullable=False)
-    hydraulic_system_name=Column(String, nullable=False)
-    sres_name=Column(String, nullable=False)
-    cell_name=Column(String, nullable=False)
+    id =Column(Integer, primary_key=True, index=True, autoincrement=True)
+    odmt_sres_id =Column(Integer, nullable=False)
+    hydraulic_system_name =Column(String, nullable=False)
+    sres_name =Column(String, nullable=False)
+    cell_name =Column(String, nullable=False)
     pi_tag_name =Column(String, nullable=False)
     operating_level =Column(Float)
     bwl =Column(Float)

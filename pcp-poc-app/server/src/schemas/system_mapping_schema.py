@@ -2,7 +2,7 @@ from pydantic import BaseModel, ConfigDict
 from typing import Optional, Annotated
 from db.models.system_mapping import SystemMappingCurrent, SystemMappingUpdates
 from datetime import datetime
-
+from sqlmodel import SQLModel, func, Field
 
 # pydantic models
 class SystemMappingBase(BaseModel):
@@ -30,20 +30,20 @@ class SystemMapping:
     odmt_area_id: int
 
 
-class SystemMappingCurrent(SystemMapping):
-    last_modified: datetime | None = None
+# class SystemMappingCurrent(SystemMapping):
+#     last_modified: datetime | None = None
 
-    def __init__(self, sys_map_db: SystemMappingCurrent):
-        self.hydraulic_system_name = sys_map_db.hydraulic_system_name
-        self.area_name = sys_map_db.area_name
-        self.region_name = sys_map_db.region_name
-        self.odmt_area_id = sys_map_db.odmt_area_id
-        self.last_modified = sys_map_db.last_modified
-        self.comments = sys_map_db.comments
+#     def __init__(self, sys_map_db: SystemMappingCurrent):
+#         self.hydraulic_system_name = sys_map_db.hydraulic_system_name
+#         self.area_name = sys_map_db.area_name
+#         self.region_name = sys_map_db.region_name
+#         self.odmt_area_id = sys_map_db.odmt_area_id
+#         self.last_modified = sys_map_db.last_modified
+#         self.comments = sys_map_db.comments
 
-    @classmethod
-    def from_db(cls, sys_map_db: SystemMappingCurrent):
-        return cls(sys_map_db)
+#     @classmethod
+#     def from_db(cls, sys_map_db: SystemMappingCurrent):
+#         return cls(sys_map_db)
 
 
 class SystemMappingUpdate(SystemMapping):
@@ -62,3 +62,17 @@ class SystemMappingUpdate(SystemMapping):
     @classmethod
     def from_db(cls, sys_map_db: SystemMappingUpdates):
         return cls(sys_map_db)
+    
+    
+
+class SystemMappingCurrent(SQLModel, table=True): 
+    __tablename__ = "pcp_poc_system_mapping"
+    # this changes from DPSN_DEMO in local development to DPSN in production
+    __table_args__ = {'schema': 'DPSN_DEMO'}   
+    
+    hydraulic_system_name: str = Field(primary_key=True, index=True)
+    area_name: str
+    comments: Optional[str] = Field(default=None)
+    region_name: str
+    odmt_area_id: int
+     

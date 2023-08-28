@@ -1,79 +1,35 @@
-from pydantic import BaseModel, ConfigDict
 from typing import Optional, Annotated
-from db.models.sres import SresCurrent, SresUpdates
 from datetime import datetime
+from sqlmodel import SQLModel, Field, func, Column
+from typing import Union, Optional
+from .system_mapping_schema import SystemMappingCurrent
+from sqlalchemy import DateTime
 
 
-class SresBase(BaseModel): 
-    # required params
-    odmt_sres_id: int 
-    hydraulic_system_name: str 
+class SresCurrent(SQLModel, table=True):
+    __tablename__="pcp_poc_sres"
+    __table_args__={"schema": "DPSN_DEMO"}
+    
+    odmt_sres_id: int = Field(primary_key=True, index=True) 
+    hydraulic_system_name: str = Field(foreign_key="DPSN_DEMO.pcp_poc_system_mapping.hydraulic_system_name")
     sres_name: str
     cell_name: str 
     pi_tag_name: str 
     engineering_unit: str
-    # optional params
-    operating_level: float | None = None
-    bwl: float | None = None
-    twl: float | None = None
-    capacity: float | None = None
-    include_exclude: str | None = None
-    comments: str | None = None 
-    include_in_dv: int | None = None 
-    turnover_target_lower: float | None = None 
-    turnover_target_upper: float | None = None
-    sm_record_id: str | None = None 
-    validated_tag: str | None = None
-    last_modified: datetime | None = None 
-        
-    model_config = ConfigDict(from_attributes=True)
     
-class SresUpdateBase(BaseModel): 
-    # required params
-    id: int  
-    odmt_sres_id: int 
-    hydraulic_system_name: str 
-    sres_name: str
-    cell_name: str 
-    pi_tag_name: str 
-    engineering_unit: str
     # optional params
-    operating_level: float | None = None
-    bwl: float | None = None
-    twl: float | None = None
-    capacity: float | None = None
-    include_exclude: str | None = None
-    comments: str | None = None 
-    include_in_dv: int | None = None 
-    turnover_target_lower: float | None = None 
-    turnover_target_upper: float | None = None
-    sm_record_id: str | None = None 
-    validated_tag: str | None = None
-    date_updated: datetime | None = None
-        
-    model_config = ConfigDict(from_attributes=True)
-    
-    
-class Sres: 
-    # required params
-    odmt_sres_id: int 
-    hydraulic_system_name: str 
-    sres_name: str
-    cell_name: str 
-    pi_tag_name: str 
-    engineering_unit: str
-    # optional params
-    operating_level: float | None = None
-    bwl: float | None = None
-    twl: float | None = None
-    capacity: float | None = None
-    include_exclude: str | None = None
-    comments: str | None = None 
-    include_in_dv: int | None = None 
-    turnover_target_lower: float | None = None 
-    turnover_target_upper: float | None = None
-    sm_record_id: str | None = None 
-    validated_tag: str | None = None
+    operating_level: Optional[float]
+    bwl: Optional[float]
+    twl: Optional[float]
+    capacity: Optional[float]
+    include_exclude: Optional[str]
+    comments: Optional[str] 
+    include_in_dv: Optional[int] 
+    turnover_target_lower: Optional[float] 
+    turnover_target_upper: Optional[float]
+    sm_record_id: Optional[str] 
+    validated_tag: Optional[str]
+    last_modified: Optional[datetime] 
     
     def __repr__(self): 
         return f"SRES ID: {self.odmt_sres_id} \
@@ -82,65 +38,38 @@ class Sres:
             Cell Name: {self.cell_name} \
             PI Tag Name: {self.pi_tag_name} \
             Engineering Unit: {self.engineering_unit}"
-    
 
-class SresCurrent(Sres):     
-    # optional params 
-    last_modified: datetime | None = None 
-    def __init__(self, sres_db: SresCurrent): 
-        self.odmt_sres_id = sres_db.odmt_sres_id
-        self.hydraulic_system_name = sres_db.hydraulic_system_name
-        self.sres_name = sres_db.sres_name
-        self.cell_name = sres_db.cell_name
-        self.pi_tag_name = sres_db.pi_tag_name
-        self.engineering_unit = sres_db.engineering_unit
-        
-        self.operating_level = sres_db.operating_level
-        self.bwl = sres_db.bwl
-        self.twl = sres_db.twl
-        self.capacity = sres_db.capacity
-        self.comments = sres_db.comments
-        self.include_exclude = sres_db.include_exclude
-        self.include_in_dv = sres_db.include_in_dv
-        self.turnover_target_lower = sres_db.turnover_target_lower
-        self.turnover_target_upper = sres_db.turnover_target_upper
-        self.sm_record_id = sres_db.sm_record_id
-        self.validated_tag = sres_db.validated_tag
-        
-        self.last_modified = sres_db.last_modified
-
-    @classmethod
-    def from_db(cls, sres_db: SresCurrent): 
-        return cls(sres_db)
+class SresUpdate(SQLModel, table=True): 
+    __tablename__="pcp_poc_sres_updates"
+    __table_args__={"schema": "DPSN_DEMO"}
     
-class SresUpdate(Sres):
-    # required params
-    id: int  
+    id: int=Field(primary_key=True, index=True)
+    odmt_sres_id: int = Field(index=True, foreign_key="DPSN_DEMO.pcp_poc_sres.odmt_sres_id") 
+    hydraulic_system_name: str = Field(foreign_key="DPSN_DEMO.pcp_poc_system_mapping.hydraulic_system_name")
+    
+    sres_name: Optional[str]
+    cell_name: Optional[str] 
+    pi_tag_name: Optional[str] 
+    engineering_unit: Optional[str]
+    
     # optional params
-    date_updated: datetime | None = None
+    operating_level: Optional[float]
+    bwl: Optional[float]
+    twl: Optional[float]
+    capacity: Optional[float]
+    include_exclude: Optional[str]
+    comments: Optional[str] 
+    include_in_dv: Optional[int] 
+    turnover_target_lower: Optional[float] 
+    turnover_target_upper: Optional[float]
+    sm_record_id: Optional[str] 
+    validated_tag: Optional[str]
+    date_updated: Optional[datetime] = Field(default=datetime.now(), sa_column=Column(DateTime(timezone=True)))
     
-    def __init__(self, sres_db: SresUpdates): 
-        self.id = sres_db.id
-        self.odmt_sres_id = sres_db.odmt_sres_id
-        self.hydraulic_system_name = sres_db.hydraulic_system_name
-        self.sres_name = sres_db.sres_name
-        self.cell_name = sres_db.cell_name
-        self.pi_tag_name = sres_db.pi_tag_name
-        self.engineering_unit = sres_db.engineering_unit
-
-        self.operating_level = sres_db.operating_level
-        self.bwl = sres_db.bwl
-        self.twl = sres_db.twl
-        self.capacity = sres_db.capacity
-        self.comments = sres_db.comments
-        self.include_exclude = sres_db.include_exclude
-        self.include_in_dv = sres_db.include_in_dv
-        self.turnover_target_lower = sres_db.turnover_target_lower
-        self.turnover_target_upper = sres_db.turnover_target_upper
-        self.sm_record_id = sres_db.sm_record_id
-        self.validated_tag = sres_db.validated_tag
-        self.date_updated = sres_db.date_updated
-        
-    @classmethod
-    def from_db(cls, sres_db: SresUpdates): 
-        return cls(sres_db)
+    def __repr__(self): 
+        return f"SRES ID: {self.odmt_sres_id} \
+            Hydraulic System Name: {self.hydraulic_system_name} \
+            SRES Name: {self.sres_name} \
+            Cell Name: {self.cell_name} \
+            PI Tag Name: {self.pi_tag_name} \
+            Engineering Unit: {self.engineering_unit}"
