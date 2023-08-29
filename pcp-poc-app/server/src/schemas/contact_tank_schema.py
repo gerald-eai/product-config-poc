@@ -30,6 +30,10 @@ class ContactTankCurrent(SQLModel, table=True):
         default=datetime.now(), sa_column=Column(DateTime(timezone=True))
     )
 
+#     def __repr__(self):
+#         values = ', '.join([f"{column.name}='{getattr(self, column.name)}'" for column in self.__table__.columns])
+#         return f"{self.__class__.__name__}({values})"
+
 
 class ContactTankUpdates(SQLModel, table=True):
     __tablename__ = "pcp_poc_contact_tanks_updates"
@@ -60,3 +64,8 @@ class ContactTankUpdates(SQLModel, table=True):
     date_updated: Optional[datetime] = Field(
         default=datetime.now(), sa_column=Column(DateTime(timezone=True))
     )
+    
+#     def __repr__(self):
+#         values = ', '.join([f"{column.name}='{getattr(self, column.name)}'" for column in self.__table__.columns])
+#         return f"{self.__class__.__name__}({values})"
+
