@@ -1,7 +1,6 @@
 from datetime import datetime
-
 from pydantic import BaseModel
-
+from typing import Optional
 
 class CreateAuditRequest(BaseModel):
     id: int | None = None
