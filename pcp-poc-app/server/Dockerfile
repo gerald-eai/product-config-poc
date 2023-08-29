@@ -1,6 +1,7 @@
 FROM --platform=arm64 python:3.10-slim-bullseye
 
-RUN apt update -y  &&  apt upgrade -y && apt-get update 
+USER root
+
 RUN apt-get update && apt-get install -y freetds-dev unixodbc-dev 
 # Set environment variables for the ODBC Driver installation
 
@@ -8,25 +9,25 @@ RUN apt-get update && apt-get install -y freetds-dev unixodbc-dev
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
         curl \
-        gnupg2 \
+        gcc gnupg2 \
         apt-transport-https \
     && rm -rf /var/lib/apt/lists/*
 
-# Download and install the Microsoft ODBC Driver 17 for SQL Server
-RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add -
+RUN curl https://packages.microsoft.com/keys/microsoft.asc | tee /etc/apt/trusted.gpg.d/microsoft.asc
 
-RUN curl https://packages.microsoft.com/config/ubuntu/$(lsb_release -rs)/prod.list > /etc/apt/sources.list.d/mssql-release.list
+#Debian 11
+RUN curl https://packages.microsoft.com/config/debian/11/prod.list | tee /etc/apt/sources.list.d/mssql-release.list
 
-RUN sleep 5
-RUN apt-get update 
-RUN ACCEPT_EULA=Y apt-get install -y msodbcsql17
+RUN apt-get update
+RUN ACCEPT_EULA=Y apt-get install -y msodbcsql18
 # optional: for bcp and sqlcmd
-RUN ACCEPT_EULA=Y apt-get install -y mssql-tools
-RUN echo 'export PATH="$PATH:/opt/mssql-tools/bin"' >> ~/.bashrc
-RUN source ~/.bashrc
-# optional: for unixODBC development headers
-# RUN sudo apt-get install -y unixodbc-dev
-ENV PYODBC_VERSION=4.0.39
+RUN ACCEPT_EULA=Y apt-get install -y mssql-tools18
+RUN apt-get clean
+RUN echo 'export PATH="$PATH:/opt/mssql-tools18/bin"' >> ~/.bashrc
+# Add the mssql-tools18 binary to the PATH
+ENV PATH="$PATH:/opt/mssql-tools18/bin"
+RUN apt-get install -y libgssapi-krb5-2
+
 
 WORKDIR /app 
 
