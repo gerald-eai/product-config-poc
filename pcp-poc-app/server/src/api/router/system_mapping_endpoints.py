@@ -4,7 +4,7 @@ from api.dependencies import (
     get_sys_map_update_service,
     get_audit_log_service,
 )
-from schemas.system_mapping_schema import SystemMappingBase, SystemMappingUpdatesBase
+from schemas.system_mapping_schema import SystemMappingCurrent, SystemMappingUpdates
 from api.requests import system_mapping_requests
 from services.system_mapping_service import (
     SystemMappingService,
@@ -13,13 +13,14 @@ from services.system_mapping_service import (
 from api.requests.audit_log_requests import CreateAuditRequest
 from services.audit_log_service import AuditLogService
 from datetime import datetime 
+from typing import List
 
 
 router = APIRouter(prefix="/system-mapping", tags=["System Mapping endpoints"])
 
 
 # read operations
-@router.get("/live", response_model=list[SystemMappingBase])
+@router.get("/live", response_model=List[SystemMappingCurrent])
 def get_all_current(
     skip: int = 0,
     limit: int = 100,
@@ -29,7 +30,7 @@ def get_all_current(
     return sys_map_data
 
 
-@router.get("/live/{hydraulic_system_name}", response_model=SystemMappingBase)
+@router.get("/live/{hydraulic_system_name}", response_model=SystemMappingCurrent)
 def get_current_by_name(
     hydraulic_system_name: str,
     sys_map_service: SystemMappingService = Depends(get_sys_map_service),
@@ -38,7 +39,7 @@ def get_current_by_name(
     return sys_map_data
 
 
-@router.post("/live", response_model=SystemMappingBase)
+@router.post("/live", response_model=SystemMappingCurrent)
 def create_new_system_map(
     create_sysmap_request: system_mapping_requests.CreateNewSystemMapLive,
     sys_map_service: SystemMappingService = Depends(get_sys_map_service),
@@ -68,7 +69,7 @@ def create_new_system_map(
 
 
 # read from updates
-@router.get("/updates", response_model=list[SystemMappingUpdatesBase])
+@router.get("/updates", response_model=List[SystemMappingUpdates])
 def get_all_updates(
     skip: int = 0,
     limit: int = 100,
@@ -80,7 +81,7 @@ def get_all_updates(
     return sys_map_data
 
 
-@router.get("/updates/{hydraulic_system_name}", response_model=SystemMappingUpdatesBase)
+@router.get("/updates/{hydraulic_system_name}", response_model=SystemMappingUpdates)
 def get_update_by_name(
     hydraulic_system_name: str,
     sys_map_update_service: SystemMappingUpdateService = Depends(
@@ -91,8 +92,8 @@ def get_update_by_name(
     return sys_map_data
 
 
-# create in updates
-@router.post("/updates", response_model=SystemMappingUpdatesBase)
+# create in updates pending table
+@router.post("/updates", response_model=SystemMappingUpdates)
 def create_update_entry(
     create_request: system_mapping_requests.CreateSystemMapUpdate,
     sys_map_update_service: SystemMappingUpdateService = Depends(
@@ -102,6 +103,7 @@ def create_update_entry(
 ):
     try:
         new_sys_map_entry = sys_map_update_service.create_new_update(create_request)
+        print(f"New System Map Entry: \n{new_sys_map_entry}")
         # create an event based on this
         new_audit_event = CreateAuditRequest(
             table_altered="pcp_poc_system_mapping_updates",
@@ -109,10 +111,11 @@ def create_update_entry(
             previous_value="None",
             updated_value="updated",
             actor="CreateTest@testuser.com",
-            event_date=new_sys_map_entry.date_updated,
+            event_date=datetime.now(),
             columns_altered="col1;col2;",
             status="Pending",
             pushed_to_live_date=None,
+            
             row_altered=str(new_sys_map_entry.hydraulic_system_name)
         )
         audit_service.create_new_event(new_audit_event)
@@ -122,7 +125,7 @@ def create_update_entry(
 
 
 # update in updates
-@router.put("/updates/{update_id}", response_model=SystemMappingUpdatesBase)
+@router.put("/updates/{update_id}", response_model=SystemMappingUpdates)
 def update_existing_entry(
     update_id: int,
     update_request: system_mapping_requests.UpdateSystemMapUpdate,

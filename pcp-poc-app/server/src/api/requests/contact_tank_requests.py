@@ -22,11 +22,11 @@ class CreateContactTankLive(BaseModel):
     
 class CreateContactTankRequest(BaseModel):
     odmt_contact_tank_id: int
-    hydraulic_system_name: str
-    sres_name: str
-    cell_name: str
-    pi_tag_name: str
-    engineering_unit: str
+    hydraulic_system_name: Optional[str]
+    sres_name: Optional[str]
+    cell_name: Optional[str]
+    pi_tag_name: Optional[str]
+    engineering_unit: Optional[str]
 
     validated_tag: str | None = None
     operating_level: float | None = None

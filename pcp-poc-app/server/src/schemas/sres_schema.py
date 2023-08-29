@@ -1,8 +1,7 @@
-from typing import Optional, Annotated
+from typing import Optional
 from datetime import datetime
-from sqlmodel import SQLModel, Field, func, Column
-from typing import Union, Optional
-from .system_mapping_schema import SystemMappingCurrent
+from sqlmodel import SQLModel, Field, Column
+from typing import Optional
 from sqlalchemy import DateTime
 
 
@@ -39,6 +38,10 @@ class SresCurrent(SQLModel, table=True):
             PI Tag Name: {self.pi_tag_name} \
             Engineering Unit: {self.engineering_unit}"
 
+#     def __repr__(self):
+#         values = ', '.join([f"{column.name}='{getattr(self, column.name)}'" for column in self.__table__.columns])
+#         return f"{self.__class__.__name__}({values})"
+
 class SresUpdate(SQLModel, table=True): 
     __tablename__="pcp_poc_sres_updates"
     __table_args__={"schema": "DPSN_DEMO"}
@@ -73,3 +76,7 @@ class SresUpdate(SQLModel, table=True):
             Cell Name: {self.cell_name} \
             PI Tag Name: {self.pi_tag_name} \
             Engineering Unit: {self.engineering_unit}"
+
+#     def __repr__(self):
+#         values = ', '.join([f"{column.name}='{getattr(self, column.name)}'" for column in self.__table__.columns])
+#         return f"{self.__class__.__name__}({values})"

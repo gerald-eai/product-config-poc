@@ -1,107 +1,71 @@
-from pydantic import BaseModel, ConfigDict
-from typing import Optional, Annotated
-from db.models.contact_tanks import ContactTanksCurrent, ContactTanksUpdate
 from datetime import datetime
+from typing import Annotated, Optional
+from sqlmodel import Column, DateTime, Field, SQLModel
 
 
-# pydantic models
-class ContactTankBase(BaseModel):
-    odmt_contact_tank_id: int
-    hydraulic_system_name: str
-    sres_name: str
-    cell_name: str
-    pi_tag_name: str
-    engineering_unit: str
+class ContactTankCurrent(SQLModel, table=True):
+    __tablename__ = "pcp_poc_contact_tanks"
+    __table_args__ = {"schema": "DPSN_DEMO"}
 
-    validated_tag: str | None = None
-    operating_level: float | None = None
-    bwl: float | None = None
-    twl: float | None = None
-    capacity: float | None = None
-    comments: str | None = None
-    include_SDSR: int | None = None
-    include_SRV: int | None = None
-    include_WPRO: int | None = None
+    odmt_contact_tank_id: int = Field(primary_key=True, index=True)
+    hydraulic_system_name: Optional[str] = Field(
+        foreign_key="DPSN_DEMO.pcp_poc_system_mapping.hydraulic_system_name"
+    )
+    sres_name: str = Field(index=True)
+    cell_name: str = Field(index=True)
+    pi_tag_name: str = Field(index=True)
+    engineering_unit: Optional[str] = Field(index=True)
+    validated_tag: Optional[str] = Field(default=None)
+    operating_level: Optional[float] = Field(default=None)
+    bwl: Optional[float] = Field(default=None)
+    twl: Optional[float] = Field(default=None)
+    capacity: Optional[float] = Field(default=None)
+    comments: Optional[str] = Field(default=None)
+    include_SDSR: Optional[int] = Field(default=None)
+    include_SRV: Optional[int] = Field(default=None)
+    include_WPRO: Optional[int] = Field(default=None)
+    cell_status: Optional[str]
 
-    model_config = ConfigDict(from_attributes=True)
+    last_modified: Optional[datetime] = Field(
+        default=datetime.now(), sa_column=Column(DateTime(timezone=True))
+    )
 
-
-class ContactTankCurrentBase(ContactTankBase):
-    last_modified: datetime | None = None
-
-
-class ContactTankUpdateBase(ContactTankBase):
-    id: int
-    date_updated: datetime | None = None
-
-
-class ContactTank:
-    odmt_contact_tank_id: int
-    hydraulic_system_name: str
-    sres_name: str
-    cell_name: str
-    pi_tag_name: str
-    engineering_unit: str
-
-    validated_tag: str | None = None
-    operating_level: float | None = None
-    bwl: float | None = None
-    twl: float | None = None
-    capacity: float | None = None
-    comments: str | None = None
-    include_SDSR: int | None = None
-    include_SRV: int | None = None
-    include_WPRO: int | None = None
+#     def __repr__(self):
+#         values = ', '.join([f"{column.name}='{getattr(self, column.name)}'" for column in self.__table__.columns])
+#         return f"{self.__class__.__name__}({values})"
 
 
-class ContactTankCurrentDB(ContactTank):
-    last_modified: datetime | None = None
+class ContactTankUpdates(SQLModel, table=True):
+    __tablename__ = "pcp_poc_contact_tanks_updates"
+    __table_args__ = {"schema": "DPSN_DEMO"}
 
-    def __init__(self, tank_db: ContactTanksCurrent):
-        self.odmt_contact_tank_id = tank_db.odmt_contact_tank_id
-        self.hydraulic_system_name = tank_db.hydraulic_system_name
-        self.sres_name = tank_db.sres_name
-        self.cell_name = tank_db.cell_name
-        self.pi_tag_name = tank_db.pi_tag_name
-        self.engineering_unit = tank_db.engineering_unit
-        self.validated_tag = tank_db.validated_tag
-        self.operating_level = tank_db.operating_level
-        self.bwl = tank_db.bwl
-        self.twl = tank_db.twl
-        self.capacity = tank_db.capacity
-        self.comments = tank_db.comments
-        self.include_SDSR = tank_db.include_SDSR
-        self.include_SRV = tank_db.include_SRV
-        self.include_WPRO = tank_db.include_WPRO
+    id: int = Field(primary_key=True, index=True)
+    odmt_contact_tank_id: int = Field(
+        index=True, foreign_key="DPSN_DEMO.pcp_poc_contact_tanks.odmt_contact_tank_id"
+    )
+    hydraulic_system_name: Optional[str] = Field(
+        foreign_key="DPSN_DEMO.pcp_poc_system_mapping.hydraulic_system_name"
+    )
+    sres_name: Optional[str] = Field(index=True, default=None)
+    cell_name: Optional[str] = Field(index=True, default=None)
+    pi_tag_name: Optional[str] = Field(index=True, default=None)
+    engineering_unit: Optional[str] = Field(default=None)
+    validated_tag: Optional[str] = Field(default=None)
+    operating_level: Optional[float] = Field(default=None)
+    bwl: Optional[float] = Field(default=None)
+    twl: Optional[float] = Field(default=None)
+    capacity: Optional[float] = Field(default=None)
+    comments: Optional[str] = Field(default=None)
+    include_SDSR: Optional[int] = Field(default=None)
+    include_SRV: Optional[int] = Field(default=None)
+    include_WPRO: Optional[int] = Field(default=None)
+    cell_status: Optional[str]
 
-    @classmethod
-    def from_db(cls, tank_db: ContactTanksCurrent):
-        return cls(tank_db)
+    date_updated: Optional[datetime] = Field(
+        default=datetime.now(), sa_column=Column(DateTime(timezone=True))
+    )
+    
+#     def __repr__(self):
+#         values = ', '.join([f"{column.name}='{getattr(self, column.name)}'" for column in self.__table__.columns])
+#         return f"{self.__class__.__name__}({values})"
 
-
-class ContactTankUpdateDB(ContactTank):
-    id: int
-    date_updated: datetime | None = None
-
-    def __init__(self, tank_db: ContactTanksUpdate):
-        self.id = tank_db.id
-        self.odmt_contact_tank_id = tank_db.odmt_contact_tank_id
-        self.hydraulic_system_name = tank_db.hydraulic_system_name
-        self.sres_name = tank_db.sres_name
-        self.cell_name = tank_db.cell_name
-        self.pi_tag_name = tank_db.pi_tag_name
-        self.engineering_unit = tank_db.engineering_unit
-        self.validated_tag = tank_db.validated_tag
-        self.operating_level = tank_db.operating_level
-        self.bwl = tank_db.bwl
-        self.twl = tank_db.twl
-        self.capacity = tank_db.capacity
-        self.comments = tank_db.comments
-        self.include_SDSR = tank_db.include_SDSR
-        self.include_SRV = tank_db.include_SRV
-        self.include_WPRO = tank_db.include_WPRO
-        self.date_updated = tank_db.date_updated
-
-    @classmethod
-    def from_db(cls, tank_db: ContactTanksUpdate):
-        return cls(tank_db)
