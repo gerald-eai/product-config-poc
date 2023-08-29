@@ -1,33 +1,7 @@
-from pydantic import BaseModel, ConfigDict
-from typing import Optional, Annotated
-# from db.models.system_mapping import SystemMappingCurrent, SystemMappingUpdates
+from typing import Optional
 from datetime import datetime
-from sqlmodel import SQLModel, func, Field, Column, DateTime
+from sqlmodel import SQLModel, Field, Column, DateTime
 
-# pydantic models
-class SystemMappingBase(BaseModel):
-    hydraulic_system_name: str
-    area_name: str
-    region_name: str
-    comments: str | None = None
-    odmt_area_id: int
-    # last_modified: datetime | None = None
-
-    model_config = ConfigDict(from_attributes=True)
-
-
-class SystemMappingUpdatesBase(SystemMappingBase):
-    id: int
-    date_updated: datetime | None = None
-
-
-# sql models ie database object
-class SystemMapping:
-    hydraulic_system_name: str
-    area_name: str
-    comments: str | None = None
-    region_name: str
-    odmt_area_id: int
 
 class SystemMappingCurrent(SQLModel, table=True): 
     __tablename__ = "pcp_poc_system_mapping"
@@ -51,3 +25,7 @@ class SystemMappingUpdates(SQLModel, table=True):
     region_name: Optional[str]
     odmt_area_id: Optional[int]
     date_updated: Optional[datetime] = Field(default=datetime.now(), sa_column=Column(DateTime(timezone=True)))
+    
+#     def __repr__(self):
+#         values = ', '.join([f"{column.name}='{getattr(self, column.name)}'" for column in self.__table__.columns])
+#         return f"{self.__class__.__name__}({values})"

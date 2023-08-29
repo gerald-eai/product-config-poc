@@ -6,7 +6,7 @@ from api.dependencies import (
 )
 from api.requests import contact_tank_requests
 from services.contact_tank_service import ContactTankService, ContactTankUpdateService
-from schemas.contact_tank_schema import ContactTankCurrentBase, ContactTankUpdateBase
+from schemas.contact_tank_schema import ContactTankCurrent, ContactTankUpdates
 from api.requests.audit_log_requests import CreateAuditRequest
 from services.audit_log_service import AuditLogService
 from datetime import datetime
@@ -15,7 +15,7 @@ from datetime import datetime
 router = APIRouter(prefix="/contact-tanks", tags=["Contact Tanks Endpoints"])
 
 
-@router.get("/live", response_model=list[ContactTankCurrentBase])
+@router.get("/live", response_model=list[ContactTankCurrent])
 def get_all_current(
     skip: int = 0,
     limit: int = 100,
@@ -25,7 +25,7 @@ def get_all_current(
     return sys_map_data
 
 
-@router.get("/live/{odmt_contact_tank_id}", response_model=ContactTankCurrentBase)
+@router.get("/live/{odmt_contact_tank_id}", response_model=ContactTankCurrent)
 def get_current_by_name(
     odmt_contact_tank_id: int,
     contact_tank_service: ContactTankService = Depends(get_contact_tank_service),
@@ -34,7 +34,7 @@ def get_current_by_name(
     return contact_tank_data
 
 
-@router.post("/live", response_model=ContactTankCurrentBase)
+@router.post("/live", response_model=ContactTankCurrent)
 def create_new_entry(
     create_request: contact_tank_requests.CreateContactTankLive,
     create_tank_service: ContactTankService = Depends(get_contact_tank_service),
@@ -62,7 +62,7 @@ def create_new_entry(
 
 
 # read from updates
-@router.get("/updates", response_model=list[ContactTankUpdateBase])
+@router.get("/updates", response_model=list[ContactTankUpdates])
 def get_all_updates(
     skip: int = 0,
     limit: int = 100,
@@ -74,7 +74,7 @@ def get_all_updates(
     return contact_tank_data
 
 
-@router.get("/updates/{odmt_tank_id}", response_model=ContactTankUpdateBase)
+@router.get("/updates/{odmt_tank_id}", response_model=ContactTankUpdates)
 def get_update_tank_id(
     odmt_tank_id: int,
     update_tank_service: ContactTankUpdateService = Depends(
@@ -87,7 +87,7 @@ def get_update_tank_id(
 
 
 # create in updates
-@router.post("/updates", response_model=ContactTankUpdateBase)
+@router.post("/updates", response_model=ContactTankUpdates)
 def create_update_entry(
     create_request: contact_tank_requests.CreateContactTankRequest,
     update_tank_service: ContactTankUpdateService = Depends(
@@ -118,7 +118,7 @@ def create_update_entry(
 
 
 # update exsiting in updates
-@router.put("/updates/{update_id}", response_model=ContactTankUpdateBase)
+@router.put("/updates/{update_id}", response_model=ContactTankUpdates)
 def update_existing_entry(
     update_id: int,
     update_request: contact_tank_requests.UpdateContactTankRequest,

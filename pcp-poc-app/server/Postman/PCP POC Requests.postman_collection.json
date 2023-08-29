@@ -1,0 +1,422 @@
+{
+  "info": {
+    "_postman_id": "98483ecc-e939-495d-8f16-2acb3c41bfb6",
+    "name": "PCP POC Requests",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "9589971",
+    "_collection_link": "https://galactic-crater-214875.postman.co/workspace/Explore-AI~2ec41bfd-19d3-4722-87af-395413ac1cc0/collection/9589971-98483ecc-e939-495d-8f16-2acb3c41bfb6?action=share&creator=9589971&source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Sres",
+      "item": [
+        {
+          "name": "Create New SRES Update",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"odmt_sres_id\": 46, \n\t\"hydraulic_system_name\":\"Croydon System\",\n\t\"sres_name\":\"Tester SRES Audit No. 2\",\n\t\"cell_name\":\"Imperfect Audit Cell No. 2\",\n\t\"pi_tag_name\":\"sensor-1-22-goku No. 2\",\n\t\"operating_level\":1.0,\n\t\"bwl\":2.0,\n\t\"twl\":3.0,\n\t\"capacity\":1.0,\n\t\"include_exclude\":\"include No. 2\",\n\t\"comments\":\"Testing a new audit record No. 2\",\n\t\"include_in_dv\":1,\n\t\"turnover_target_lower\":4.0,\n\t\"turnover_target_upper\":5.0,\n\t\"sm_record_id\":\"test-1-22-temp No. 2\",\n\t\"validated_tag\":\"test-1-22-hum No. 2\",\n\t\"engineering_unit\":\"test-m2 No. 2\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/sres/updates/new-entry",
+              "host": ["{{baseUrl}}"],
+              "path": ["sres", "updates", "new-entry"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update SRES Update Entry",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"id\": 1005,\n    \"sres_name\": \"New Audit Log Tester SRES 012\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/sres/updates/1005",
+              "host": ["{{baseUrl}}"],
+              "path": ["sres", "updates", "1005"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create New Sres Current Entry",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"hydraulic_system_name\": \"Purple Satoru System\",\n  \"sres_name\": \"Lime Green Sres Area\",\n  \"cell_name\": \"The Purple Cell\",\n  \"pi_tag_name\": \"Test-Press-Valve-001 SRES\",\n  \"engineering_unit\": \"ksi(%)\", \n  \"last_modified\": \"2023-08-28 23:20:33.453\"\n} ",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/sres/live",
+              "host": ["{{baseUrl}}"],
+              "path": ["sres", "live"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Live Sres",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/sres/live/?skip=0&limit=100",
+              "host": ["{{baseUrl}}"],
+              "path": ["sres", "live", ""],
+              "query": [
+                {
+                  "key": "skip",
+                  "value": "0"
+                },
+                {
+                  "key": "limit",
+                  "value": "100"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Updating Sres",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/sres/updates/?skip=0&limit=100",
+              "host": ["{{baseUrl}}"],
+              "path": ["sres", "updates", ""],
+              "query": [
+                {
+                  "key": "skip",
+                  "value": "0"
+                },
+                {
+                  "key": "limit",
+                  "value": "100"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get By ODMT Sres ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/sres/live/12",
+              "host": ["{{baseUrl}}"],
+              "path": ["sres", "live", "12"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get By ODMT Sres ID Updates",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/sres/updates/12",
+              "host": ["{{baseUrl}}"],
+              "path": ["sres", "updates", "12"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "System-Mapping",
+      "item": [
+        {
+          "name": "Get System Mapping by Hydraulic Name",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/system-mapping/live/Childrey%20Warren%20System",
+              "host": ["{{baseUrl}}"],
+              "path": ["system-mapping", "live", "Childrey%20Warren%20System"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All System Mapping Endpoints",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/system-mapping/live/?skip=0&limit=100",
+              "host": ["{{baseUrl}}"],
+              "path": ["system-mapping", "live", ""],
+              "query": [
+                {
+                  "key": "skip",
+                  "value": "0"
+                },
+                {
+                  "key": "limit",
+                  "value": "100"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create System Map Update Entry",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"hydraulic_system_name\": \"Wycombe System\",\n  \"area_name\": \"Area 515612\",\n  \"region_name\": \"Jonathon Wickham Region 43rd Road\",\n  \"comments\": \"Create a new entry in the System Mapping Staging Table! No. 34\",\n  \"odmt_area_id\": 56\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/system-mapping/updates/",
+              "host": ["{{baseUrl}}"],
+              "path": ["system-mapping", "updates", ""]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update System Map Update Entry",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": 1009,\n  \"area_name\": \"Area 56\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/system-mapping/updates/1009",
+              "host": ["{{baseUrl}}"],
+              "path": ["system-mapping", "updates", "1009"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create New System Map Entry",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"hydraulic_system_name\": \"Planet Vegeta System\",\n  \"area_name\": \"SSJ 1 Area\",\n  \"region_name\": \"SSJ 2 Region\",\n  \"odmt_area_id\":99 \n} ",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/system-mapping/live",
+              "host": ["{{baseUrl}}"],
+              "path": ["system-mapping", "live"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Contact-Tanks",
+      "item": [
+        {
+          "name": "Create Contact Tank Update",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"odmt_contact_tank_id\": 1008,\n  \"hydraulic_system_name\": \"Purple Satoru System\",\n  \"pi_tag_name\": \"Test-Pump-Valve-024\",\n  \"engineering_unit\": \"force (kN)\",\n  \"validated_tag\": \"Breath #3: Tag of Validation\", \n  \"date_updated\": \"2023-08-29 13:52:00\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/contact-tanks/updates",
+              "host": ["{{baseUrl}}"],
+              "path": ["contact-tanks", "updates"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Pending Change",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"id\": 2003,\n    \"odmt_contact_tank_id\": 1008,\n    \"sres_name\": \"Rengoku Sres Number Fourier Series Today\",\n    \"cell_name\": \"Kyojuro Cell\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/contact-tanks/updates/2003",
+              "host": ["{{baseUrl}}"],
+              "path": ["contact-tanks", "updates", "2003"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create New Contact Tanks Current",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"hydraulic_system_name\": \"Purple Satoru System\",\n  \"sres_name\": \"Rengoku Sres\",\n  \"cell_name\": \"Purgatory Cell\",\n  \"pi_tag_name\": \"Test-Pump-Valve-009\",\n  \"engineering_unit\": \"force (kN)\"\n} ",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/contact-tanks/live",
+              "host": ["{{baseUrl}}"],
+              "path": ["contact-tanks", "live"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Current Contact Tanks",
+          "request": {
+            "method": "GET",
+            "header": []
+          },
+          "response": []
+        },
+        {
+          "name": "Get Current Contact by Id",
+          "request": {
+            "method": "GET",
+            "header": []
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Audit-Logs",
+      "item": [
+        {
+          "name": "Get All Audit Events",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/audit/?skip=0&limit=100",
+              "host": ["{{baseUrl}}"],
+              "path": ["audit", ""],
+              "query": [
+                {
+                  "key": "skip",
+                  "value": "0"
+                },
+                {
+                  "key": "limit",
+                  "value": "100"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Audit Event by Id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/audit/?skip=0&limit=100",
+              "host": ["{{baseUrl}}"],
+              "path": ["audit", ""],
+              "query": [
+                {
+                  "key": "skip",
+                  "value": "0"
+                },
+                {
+                  "key": "limit",
+                  "value": "100"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [""]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [""]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8000",
+      "type": "string"
+    }
+  ]
+}
