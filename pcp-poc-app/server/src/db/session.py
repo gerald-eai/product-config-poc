@@ -13,7 +13,7 @@ PORT = settings.AZ_DB_PORT
 SCHEMA = settings.AZ_DB_SCHEMA
 
 # connection string
-driver_host_str = f"DRIVER={{ODBC Driver 17 for SQL Server}};SERVER=localhost,1433;"
+driver_host_str = f"DRIVER={{ODBC Driver 18 for SQL Server}};SERVER=localhost,1433;"
 uid_str = "DATABASE=PCP_POC_DB;UID=sa;PWD=L0ckedUp;"
 schema_str = f"CONNECTION TIMEOUT=60;SCHEMA=DPSN_DEMO;"
 connection_string = driver_host_str + uid_str + schema_str

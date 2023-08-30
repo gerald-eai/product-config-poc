@@ -172,5 +172,5 @@ eai_ssh_token
 *.pub
 
 pcp-poc-app/SQLDB/DDL/SQLDBPopulateTable.sql
-pcp-poc-app/SQLDB/DDL/SQLDBCreateSchema.sql
-pcp-poc-app/SQLDB/DDL/SQLDBDemoDBSetup.sql
+# pcp-poc-app/SQLDB/DDL/SQLDBCreateSchema.sql
+# pcp-poc-app/SQLDB/DDL/SQLDBDemoDBSetup.sql
