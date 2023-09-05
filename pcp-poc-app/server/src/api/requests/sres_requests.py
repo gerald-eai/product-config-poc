@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import Optional, Annotated
+from typing import Optional
 from datetime import datetime
 
 
@@ -10,19 +10,19 @@ class CreateNewSresLive(BaseModel):
     pi_tag_name: str
     engineering_unit: str
     
-    operating_level: float | None = None 
-    bwl: float | None = None 
-    twl: float | None = None 
-    capacity: float | None = None 
-    include_exclude: str | None = None 
-    comments: str | None = None
-    include_in_dv: int | None = None 
-    turnover_target_lower: float | None = None 
-    turnover_target_upper: float | None = None 
-    sm_record_id: str | None = None 
-    validated_tag: str | None = None
+    operating_level: Optional[float] 
+    bwl: Optional[float] 
+    twl: Optional[float] 
+    capacity: Optional[float] 
+    include_exclude: Optional[str] 
+    comments: Optional[str]
+    include_in_dv: Optional[int] 
+    turnover_target_lower: Optional[float] 
+    turnover_target_upper: Optional[float] 
+    sm_record_id: Optional[str] 
+    validated_tag: Optional[str]
     
-    last_modified: datetime | None = None
+    last_modified: Optional[datetime]
     
 # payload body for creating a new Sres Entry
 class CreateSresUpdate(BaseModel):
@@ -33,37 +33,37 @@ class CreateSresUpdate(BaseModel):
     pi_tag_name: str
     engineering_unit: str
     
-    operating_level: float | None = None 
-    bwl: float | None = None 
-    twl: float | None = None 
-    capacity: float | None = None 
-    include_exclude: str | None = None 
-    comments: str | None = None
-    include_in_dv: int | None = None 
-    turnover_target_lower: float | None = None 
-    turnover_target_upper: float | None = None 
-    sm_record_id: str | None = None 
-    validated_tag: str | None = None
+    operating_level: Optional[float] 
+    bwl: Optional[float] 
+    twl: Optional[float] 
+    capacity: Optional[float] 
+    include_exclude: Optional[str] 
+    comments: Optional[str]
+    include_in_dv: Optional[int] 
+    turnover_target_lower: Optional[float] 
+    turnover_target_upper: Optional[float] 
+    sm_record_id: Optional[str] 
+    validated_tag: Optional[str]
     
-    date_updated: datetime | None = None
+    date_updated: Optional[datetime]
 
 
 # payload body for updating a SresUpdate entry, everything is optional apart from the id
 class UpdateSresUpdate(BaseModel):
     id: int
-    hydraulic_system_name: str | None = None
-    sres_name: str | None = None
-    cell_name: str | None = None
-    pi_tag_name: str | None = None
-    operating_level: float | None = None
-    bwl: float | None = None
-    twl: float | None = None
-    capacity: float | None = None
-    include_exclude: str | None = None
-    comments: str | None = None
-    include_in_dv: int | None = None
-    turnover_target_lower: float | None = None
-    turnover_target_upper: float | None = None
-    sm_record_id: str | None = None
-    validated_tag: str | None = None
-    date_updated: datetime | None = None
+    hydraulic_system_name: Optional[str]
+    sres_name: Optional[str]
+    cell_name: Optional[str]
+    pi_tag_name: Optional[str]
+    operating_level: Optional[float]
+    bwl: Optional[float]
+    twl: Optional[float]
+    capacity: Optional[float]
+    include_exclude: Optional[str]
+    comments: Optional[str]
+    include_in_dv: Optional[int]
+    turnover_target_lower: Optional[float]
+    turnover_target_upper: Optional[float]
+    sm_record_id: Optional[str]
+    validated_tag: Optional[str]
+    date_updated: Optional[datetime]

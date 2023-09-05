@@ -4,7 +4,7 @@ from typing import Optional
 
 class AuditLog(SQLModel, table=True): 
     __tablename__ = "pcp_poc_audit_log"
-    __table_args__={"schema": "DPSN_DEMO"}
+    __table_args__={"schema": "DPSN"}
     id: int = Field(primary_key=True, index=True)
     event_id: str = Field(index=True)
     table_altered: str

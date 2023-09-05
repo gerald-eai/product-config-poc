@@ -10,12 +10,13 @@ from schemas.contact_tank_schema import ContactTankCurrent, ContactTankUpdates
 from api.requests.audit_log_requests import CreateAuditRequest
 from services.audit_log_service import AuditLogService
 from datetime import datetime
+from typing import List
 
 
 router = APIRouter(prefix="/contact-tanks", tags=["Contact Tanks Endpoints"])
 
 
-@router.get("/live", response_model=list[ContactTankCurrent])
+@router.get("/live", response_model=List[ContactTankCurrent])
 def get_all_current(
     skip: int = 0,
     limit: int = 100,
@@ -62,7 +63,7 @@ def create_new_entry(
 
 
 # read from updates
-@router.get("/updates", response_model=list[ContactTankUpdates])
+@router.get("/updates", response_model=List[ContactTankUpdates])
 def get_all_updates(
     skip: int = 0,
     limit: int = 100,
