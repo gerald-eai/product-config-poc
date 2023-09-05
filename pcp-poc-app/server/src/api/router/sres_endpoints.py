@@ -12,13 +12,14 @@ from schemas.sres_schema import SresCurrent, SresUpdate
 from api.requests import sres_requests
 from api.requests.audit_log_requests import CreateAuditRequest
 from datetime import datetime
+from typing import List
 
 
 router = APIRouter(prefix="/sres", tags=["Sres endpoints"])
 
 
 # Read Operations
-@router.get("/live", response_model=list[SresCurrent])
+@router.get("/live", response_model=List[SresCurrent])
 def get_sres_home(
     skip: int = 0,
     limit: int = 100,
@@ -70,7 +71,7 @@ def create_new_sres(
 
 
 # read from the updates table
-@router.get("/updates", response_model=list[SresUpdate])
+@router.get("/updates", response_model=List[SresUpdate])
 def fetch_all_updates(
     skip: int = 0,
     limit: int = 100,

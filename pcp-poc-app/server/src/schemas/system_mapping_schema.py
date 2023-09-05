@@ -5,8 +5,8 @@ from sqlmodel import SQLModel, Field, Column, DateTime
 
 class SystemMappingCurrent(SQLModel, table=True): 
     __tablename__ = "pcp_poc_system_mapping"
-    # this changes from DPSN_DEMO in local development to DPSN in production
-    __table_args__ = {'schema': 'DPSN_DEMO'}   
+    # this changes from DPSN in local development to DPSN in production
+    __table_args__ = {'schema': 'DPSN'}   
     
     hydraulic_system_name: str = Field(primary_key=True, index=True)
     area_name: str
@@ -16,10 +16,10 @@ class SystemMappingCurrent(SQLModel, table=True):
     
 class SystemMappingUpdates(SQLModel, table=True):
     __tablename__ = "pcp_poc_system_mapping_updates"
-    __table_args__ = {'schema': 'DPSN_DEMO'}  
+    __table_args__ = {'schema': 'DPSN'}  
     
     id: int = Field(primary_key=True, index=True)
-    hydraulic_system_name: Optional[str] = Field(foreign_key="DPSN_DEMO.pcp_poc_system_mapping.hydraulic_system_name")
+    hydraulic_system_name: Optional[str] = Field(foreign_key="DPSN.pcp_poc_system_mapping.hydraulic_system_name")
     area_name: Optional[str]
     comments: Optional[str] 
     region_name: Optional[str]

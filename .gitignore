@@ -171,6 +171,8 @@ cython_debug/
 eai_ssh_token
 *.pub
 
+*.env.local
+
 pcp-poc-app/SQLDB/DDL/SQLDBPopulateTable.sql
 # pcp-poc-app/SQLDB/DDL/SQLDBCreateSchema.sql
 # pcp-poc-app/SQLDB/DDL/SQLDBDemoDBSetup.sql

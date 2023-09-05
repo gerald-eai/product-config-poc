@@ -7,10 +7,10 @@ from sqlalchemy import DateTime
 
 class SresCurrent(SQLModel, table=True):
     __tablename__="pcp_poc_sres"
-    __table_args__={"schema": "DPSN_DEMO"}
+    __table_args__={"schema": "DPSN"}
     
     odmt_sres_id: int = Field(primary_key=True, index=True) 
-    hydraulic_system_name: str = Field(foreign_key="DPSN_DEMO.pcp_poc_system_mapping.hydraulic_system_name")
+    hydraulic_system_name: str = Field(foreign_key="DPSN.pcp_poc_system_mapping.hydraulic_system_name")
     sres_name: str
     cell_name: str 
     pi_tag_name: str 
@@ -44,11 +44,11 @@ class SresCurrent(SQLModel, table=True):
 
 class SresUpdate(SQLModel, table=True): 
     __tablename__="pcp_poc_sres_updates"
-    __table_args__={"schema": "DPSN_DEMO"}
+    __table_args__={"schema": "DPSN"}
     
     id: int=Field(primary_key=True, index=True)
-    odmt_sres_id: int = Field(index=True, foreign_key="DPSN_DEMO.pcp_poc_sres.odmt_sres_id") 
-    hydraulic_system_name: str = Field(foreign_key="DPSN_DEMO.pcp_poc_system_mapping.hydraulic_system_name")
+    odmt_sres_id: int = Field(index=True, foreign_key="DPSN.pcp_poc_sres.odmt_sres_id") 
+    hydraulic_system_name: str = Field(foreign_key="DPSN.pcp_poc_system_mapping.hydraulic_system_name")
     
     sres_name: Optional[str]
     cell_name: Optional[str] 
@@ -58,7 +58,7 @@ class SresUpdate(SQLModel, table=True):
     # optional params
     operating_level: Optional[float]
     bwl: Optional[float]
-    twl: Optional[float]
+    twl: Optional[float] 
     capacity: Optional[float]
     include_exclude: Optional[str]
     comments: Optional[str] 

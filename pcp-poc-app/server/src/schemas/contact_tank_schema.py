@@ -1,15 +1,15 @@
 from datetime import datetime
-from typing import Annotated, Optional
+from typing import Optional
 from sqlmodel import Column, DateTime, Field, SQLModel
 
 
 class ContactTankCurrent(SQLModel, table=True):
     __tablename__ = "pcp_poc_contact_tanks"
-    __table_args__ = {"schema": "DPSN_DEMO"}
+    __table_args__ = {"schema": "DPSN"}
 
     odmt_contact_tank_id: int = Field(primary_key=True, index=True)
     hydraulic_system_name: Optional[str] = Field(
-        foreign_key="DPSN_DEMO.pcp_poc_system_mapping.hydraulic_system_name"
+        foreign_key="DPSN.pcp_poc_system_mapping.hydraulic_system_name"
     )
     sres_name: str = Field(index=True)
     cell_name: str = Field(index=True)
@@ -37,14 +37,14 @@ class ContactTankCurrent(SQLModel, table=True):
 
 class ContactTankUpdates(SQLModel, table=True):
     __tablename__ = "pcp_poc_contact_tanks_updates"
-    __table_args__ = {"schema": "DPSN_DEMO"}
+    __table_args__ = {"schema": "DPSN"}
 
     id: int = Field(primary_key=True, index=True)
     odmt_contact_tank_id: int = Field(
-        index=True, foreign_key="DPSN_DEMO.pcp_poc_contact_tanks.odmt_contact_tank_id"
+        index=True, foreign_key="DPSN.pcp_poc_contact_tanks.odmt_contact_tank_id"
     )
     hydraulic_system_name: Optional[str] = Field(
-        foreign_key="DPSN_DEMO.pcp_poc_system_mapping.hydraulic_system_name"
+        foreign_key="DPSN.pcp_poc_system_mapping.hydraulic_system_name"
     )
     sres_name: Optional[str] = Field(index=True, default=None)
     cell_name: Optional[str] = Field(index=True, default=None)

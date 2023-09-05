@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Annotated, Optional
+from typing import Optional
 from pydantic import BaseModel
 
 class CreateContactTankLive(BaseModel): 
@@ -9,16 +9,16 @@ class CreateContactTankLive(BaseModel):
     pi_tag_name: str
     engineering_unit: str
 
-    validated_tag: str | None = None
-    operating_level: float | None = None
-    bwl: float | None = None
-    twl: float | None = None
-    capacity: float | None = None
-    comments: str | None = None
-    include_SDSR: int | None = None
-    include_SRV: int | None = None
-    include_WPRO: int | None = None
-    last_modified: datetime | None = None
+    validated_tag: Optional[str]
+    operating_level: Optional[float]
+    bwl: Optional[float]
+    twl: Optional[float]
+    capacity: Optional[float]
+    comments: Optional[str]
+    include_SDSR: Optional[int]
+    include_SRV: Optional[int]
+    include_WPRO: Optional[int]
+    last_modified: Optional[datetime]
     
 class CreateContactTankRequest(BaseModel):
     odmt_contact_tank_id: int
@@ -28,33 +28,33 @@ class CreateContactTankRequest(BaseModel):
     pi_tag_name: Optional[str]
     engineering_unit: Optional[str]
 
-    validated_tag: str | None = None
-    operating_level: float | None = None
-    bwl: float | None = None
-    twl: float | None = None
-    capacity: float | None = None
-    comments: str | None = None
-    include_SDSR: int | None = None
-    include_SRV: int | None = None
-    include_WPRO: int | None = None
-    date_updated: datetime | None = None
+    validated_tag: Optional[str]
+    operating_level: Optional[float]
+    bwl: Optional[float]
+    twl: Optional[float]
+    capacity: Optional[float]
+    comments: Optional[str]
+    include_SDSR: Optional[int]
+    include_SRV: Optional[int]
+    include_WPRO: Optional[int]
+    date_updated: Optional[datetime]
 
 
 class UpdateContactTankRequest(BaseModel):
     id: int
-    odmt_contact_tank_id: int | None = None
-    hydraulic_system_name: str | None = None
-    sres_name: str | None = None
-    cell_name: str | None = None
-    pi_tag_name: str | None = None
-    engineering_unit: str | None = None
-    validated_tag: str | None = None
-    operating_level: float | None = None
-    bwl: float | None = None
-    twl: float | None = None
-    capacity: float | None = None
-    comments: str | None = None
-    include_SDSR: int | None = None
-    include_SRV: int | None = None
-    include_WPRO: int | None = None
-    date_updated: datetime | None = None
+    odmt_contact_tank_id: Optional[int]
+    hydraulic_system_name: Optional[str]
+    sres_name: Optional[str]
+    cell_name: Optional[str]
+    pi_tag_name: Optional[str]
+    engineering_unit: Optional[str]
+    validated_tag: Optional[str]
+    operating_level: Optional[float]
+    bwl: Optional[float]
+    twl: Optional[float]
+    capacity: Optional[float]
+    comments: Optional[str]
+    include_SDSR: Optional[int]
+    include_SRV: Optional[int]
+    include_WPRO: Optional[int]
+    date_updated: Optional[datetime]

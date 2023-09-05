@@ -2,6 +2,10 @@ from sqlalchemy.pool import QueuePool
 from core.config.config import get_settings
 from sqlmodel import create_engine, Session
 from sqlalchemy.pool import QueuePool 
+from sqlalchemy import event
+import urllib
+import pyodbc
+
 
 
 settings = get_settings()
@@ -12,15 +16,28 @@ DB_NAME = settings.AZ_DB_NAME
 PORT = settings.AZ_DB_PORT
 SCHEMA = settings.AZ_DB_SCHEMA
 
-# connection string
-driver_host_str = f"DRIVER={{ODBC Driver 18 for SQL Server}};SERVER=localhost,1433;"
-uid_str = "DATABASE=PCP_POC_DB;UID=sa;PWD=L0ckedUp;"
-schema_str = f"CONNECTION TIMEOUT=60;SCHEMA=DPSN_DEMO;"
-connection_string = driver_host_str + uid_str + schema_str
+
+# connection string for LOCAL 
+# driver_host_str = f"DRIVER={{ODBC Driver 18 for SQL Server}};SERVER=localhost,1433;"
+# uid_str = "DATABASE=PCP_POC_DB;UID=sa;PWD=L0ckedUp;"
+# schema_str = f"CONNECTION TIMEOUT=60;SCHEMA=DPSN_DEMO;"
+# connection_string = driver_host_str + uid_str + schema_str
 
 # two different DB_URIs, 1 for local development and another for deployed development
-DB_URI = f"mssql+pyodbc:///?odbc_connect={connection_string}"
 
+# print(f"HOST NAME: {HOST}")
+
+# conn_str = f"DRIVER={{ODBC Driver 17 for SQL Server}};SERVER=tcp:sqls-euw-dev-dplatsql.database.windows.net;"\
+#                 f"DATABASE={DB_NAME};UID={USER};PWD={PWD};"\
+#                 f"ENCRYPT=yes;TRUSTSERVERCERTIFICATE=no;CONNECTION TIMEOUT=30;"\
+#                 f"AUTHENTICATION=ActiveDirectoryPassword"
+
+conn_str = urllib.parse.quote_plus(f"Driver={{ODBC Driver 17 for SQL Server}};Server={HOST},{PORT};DATABASE={DB_NAME};UID={USER};PWD={PWD};Authentication=ActiveDirectoryPassword")
+
+
+DB_URI = f"mssql+pyodbc:///?odbc_connect={conn_str}"
+# DB_URI = f"mssql+pyodbc:///{USER}:{PWD}@{HOST}/{DB_NAME}?driver=ODBC+Driver+17+for+SQL+Server"
+# print(f"DB URI: {DB_URI}")
 engine = create_engine(
     DB_URI,
     poolclass=QueuePool,
