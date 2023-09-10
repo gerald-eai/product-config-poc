@@ -1,6 +1,5 @@
-from api.requests.sres_requests import CreateNewSresLive, CreateSresUpdate, UpdateSresUpdate
-
-from schemas.sres_schema import SresCurrent, SresUpdate
+from api.requests.sres_requests import CreateNewSres, UpdateSres
+from schemas.sres_schema import SresCurrent
 from sqlmodel import Session, func
 from typing import List
 
@@ -26,10 +25,12 @@ class SresRepository:
             .first()
         )
         
-    def create_new_entry(self, new_obj: CreateNewSresLive) -> SresCurrent: 
+    def create_new_entry(self, new_obj: CreateNewSres) -> SresCurrent: 
         print(f"NEW OBJECT TO CREATE: \n{new_obj}")
         sres_current_db = SresCurrent(**vars(new_obj))
         sres_current_db.last_modified = func.now()
+        sres_current_db.production_state = "pending"
+        
         print(f"Sres Current DB Obj: {sres_current_db}")
         self.db.add(sres_current_db)
         self.db.commit()
@@ -38,59 +39,24 @@ class SresRepository:
         
         return new_sres_obj
     
-
-class SresUpdatesRepository:
-    # repository for sres updates, this is explicitly for updates therefore it only performs create and update operations
-    def __init__(self, db: Session):
-        self.db = db
-
-    def get_all(self, skip, limit):
-        return (
-            self.db.query(SresUpdate)
-            .order_by(SresUpdate.id)
-            .offset(skip)
-            .limit(limit)
-            .all()
-        )
-
-    def get_by_sres_id(self, sres_id: int):
-        return (
-            self.db.query(SresUpdate)
-            .filter(SresUpdate.odmt_sres_id == sres_id)
-            .first()
-        )
-
-    def get_by_update_id(self, update_id: int):
-        return self.db.query(SresUpdate).filter(SresUpdate.id == update_id).first()
-
-    def create_new_update(self, new_entry: CreateSresUpdate):
-        sres_update_db = SresUpdate(**vars(new_entry))
-        
-        # check if an entry already exists 
-        search_db_obj = self.db.query(SresUpdate).filter(SresUpdate.odmt_sres_id == sres_update_db.odmt_sres_id).all()
-        if len(search_db_obj) > 0:
-            raise ValueError(f"An entry already exists for sres id {sres_update_db.odmt_sres_id}")
-        
-        self.db.add(sres_update_db)
-        # self.db.flush()
-        self.db.commit()
-        self.db.refresh(sres_update_db)
-        new_sres_obj = self.get_by_update_id(sres_update_db.id)
-        return new_sres_obj
-
-    def modify_new_update(self, update_id: int, update_entry: UpdateSresUpdate):
-        sres_db_obj = self.get_by_update_id(update_id)
+    def update_existing_entry(self, updated_obj: UpdateSres) -> SresCurrent: 
+        sres_db_obj = self.get_by_id(updated_obj.odmt_sres_id)
 
         if sres_db_obj is None:
             return None
 
-        for key, value in vars(update_entry).items():
+        for key, value in vars(updated_obj).items():
             if value is not None:
                 setattr(sres_db_obj, key, value)
-        # update the datetime
-        setattr(sres_db_obj, "date_updated", func.now())
+        
+        # update the datetime and the production state
+        setattr(sres_db_obj, "last_modified", func.now())
+        setattr(sres_db_obj, "production_state", "pending")
+        
         # commit the update
         self.db.commit()
         self.db.refresh(sres_db_obj)
-        updated_data = self.get_by_update_id(update_id)
-        return updated_data
+        updated_data = self.get_by_id(updated_obj.odmt_sres_id)
+        
+        return updated_data 
+

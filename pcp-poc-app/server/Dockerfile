@@ -1,4 +1,4 @@
-FROM --platform=arm64 python:3.10-slim-bullseye
+FROM --platform=arm64 python:3.8-slim-bullseye
 
 USER root
 
@@ -27,6 +27,9 @@ RUN echo 'export PATH="$PATH:/opt/mssql-tools18/bin"' >> ~/.bashrc
 # Add the mssql-tools18 binary to the PATH
 ENV PATH="$PATH:/opt/mssql-tools18/bin"
 RUN apt-get install -y libgssapi-krb5-2
+
+# Install the CA certificates bundle
+RUN apt-get update && apt-get install -y ca-certificates
 
 
 WORKDIR /app 
