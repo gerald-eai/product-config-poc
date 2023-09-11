@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 from db.audit_log_repository import AuditLogRepository
 from schemas.audit_log_schema import AuditLog 
 from api.requests.audit_log_requests import CreateAuditRequest
-from core.utils.helper_functions import generate_audit_uuid
+from core.utils import generate_audit_uuid
 from typing import List 
 
 class AuditLogService:

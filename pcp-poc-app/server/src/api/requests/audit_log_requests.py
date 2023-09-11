@@ -13,6 +13,5 @@ class CreateAuditRequest(BaseModel):
     actor: str
     columns_altered: str 
     status: str 
-    pushed_to_live_date: Optional[datetime]
-    row_altered: str
+    row_id_altered: str
     
