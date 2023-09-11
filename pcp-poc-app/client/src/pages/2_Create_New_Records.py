@@ -31,65 +31,85 @@ def main():
     st.title("Create New Records in our Live Table")
     base_url = "http://localhost:8000/"
     
-    sres_tab, tanks_tab, sysmap_tab = st.tabs(["SRES", "Contact Tanks", "System Mapping"]) 
+    # sres_tab, tanks_tab, sysmap_tab = st.tabs(["SRES", "Contact Tanks", "System Mapping"]) 
     # our data is obtained from a dataframe
-    with sres_tab: 
-        st.markdown("## Current SRES Data")
-        refresh_btn = st.button('Refresh SRES Data :arrows_counterclockwise:')
-        live_sres_data = load_data("sres/live", base_url=base_url, params={'skip': 0, 'limit': 450})
+    
+    st.markdown("## Current SRES Data")
+    refresh_btn = st.button('Refresh SRES Data :arrows_counterclockwise:')
+    live_sres_data = load_data("sres/", base_url=base_url, params={'skip': 0, 'limit': 500})
+    save_session_state({'sres': live_sres_data})
+    
+    if refresh_btn: 
+        st.session_state['sres'] = None
+        live_sres_data = load_data("sres/", base_url=base_url, params={'skip': 0, 'limit': 500})
         save_session_state({'sres': live_sres_data})
-        
-        if refresh_btn: 
-            st.session_state['sres'] = None
-            live_sres_data = load_data("sres/live", base_url=base_url, params={'skip': 0, 'limit': 500})
-            save_session_state({'sres': live_sres_data})
 
-        st.dataframe(live_sres_data) 
-        st.divider()
-        # include a new form for creating the data
-        cols = list(live_sres_data.columns)
-        new_form_keys = dict.fromkeys(cols, None)
-        sres_form = SresForm(base_url)
-        sres_form.create_current_entry_form(new_form_keys)
+    st.dataframe(live_sres_data) 
+    st.divider()
+    # include a new form for creating the data
+    cols = list(live_sres_data.columns)
+    new_form_keys = dict.fromkeys(cols, None)
+    sres_form = SresForm(base_url)
+    sres_form.create_current_entry_form(new_form_keys)
         
         
-    with tanks_tab: 
-        st.markdown("## Current Contact Tank Data")
-        live_tanks_data = load_data("contact-tanks/live", base_url=base_url, params={'skip': 0, 'limit': 50})
-        save_session_state({'contact_tanks': live_tanks_data})
-        ctanks_refresh = st.button('Refresh Contact Tanks :arrows_counterclockwise:')
+    # with sres_tab: 
+    #     st.markdown("## Current SRES Data")
+    #     refresh_btn = st.button('Refresh SRES Data :arrows_counterclockwise:')
+    #     live_sres_data = load_data("sres/live", base_url=base_url, params={'skip': 0, 'limit': 450})
+    #     save_session_state({'sres': live_sres_data})
         
-        if ctanks_refresh: 
-            st.session_state['contact_tanks'] = None
-            live_tanks_data = load_data("contact-tanks/live", base_url=base_url, params={'skip': 0, 'limit': 150})
-            save_session_state({'contact_tanks': live_tanks_data})
+    #     if refresh_btn: 
+    #         st.session_state['sres'] = None
+    #         live_sres_data = load_data("sres/live", base_url=base_url, params={'skip': 0, 'limit': 500})
+    #         save_session_state({'sres': live_sres_data})
+
+    #     st.dataframe(live_sres_data) 
+    #     st.divider()
+    #     # include a new form for creating the data
+    #     cols = list(live_sres_data.columns)
+    #     new_form_keys = dict.fromkeys(cols, None)
+    #     sres_form = SresForm(base_url)
+    #     sres_form.create_current_entry_form(new_form_keys)
         
-        st.dataframe(live_tanks_data)
-        st.divider()
-        cols = list(live_tanks_data.columns)
-        new_form_keys = dict.fromkeys(cols, None)
-        ctank_form = ContactTankForm(base_url)
-        ctank_form.create_live_entry_form(new_form_keys)
+        
+    # with tanks_tab: 
+    #     st.markdown("## Current Contact Tank Data")
+    #     live_tanks_data = load_data("contact-tanks/live", base_url=base_url, params={'skip': 0, 'limit': 50})
+    #     save_session_state({'contact_tanks': live_tanks_data})
+    #     ctanks_refresh = st.button('Refresh Contact Tanks :arrows_counterclockwise:')
+        
+    #     if ctanks_refresh: 
+    #         st.session_state['contact_tanks'] = None
+    #         live_tanks_data = load_data("contact-tanks/live", base_url=base_url, params={'skip': 0, 'limit': 150})
+    #         save_session_state({'contact_tanks': live_tanks_data})
+        
+    #     st.dataframe(live_tanks_data)
+    #     st.divider()
+    #     cols = list(live_tanks_data.columns)
+    #     new_form_keys = dict.fromkeys(cols, None)
+    #     ctank_form = ContactTankForm(base_url)
+    #     ctank_form.create_live_entry_form(new_form_keys)
 
         
-    with sysmap_tab: 
-        st.markdown("## Current System Mapping Data")
-        live_sysmap_data = load_data("system-mapping/live", base_url=base_url, params={'skip': 0, 'limit': 52})
-        save_session_state({'system_mapping': live_sysmap_data})
-        sysmap_refresh = st.button('Refresh System Mapping :arrows_counterclockwise:')
+    # with sysmap_tab: 
+    #     st.markdown("## Current System Mapping Data")
+    #     live_sysmap_data = load_data("system-mapping/live", base_url=base_url, params={'skip': 0, 'limit': 52})
+    #     save_session_state({'system_mapping': live_sysmap_data})
+    #     sysmap_refresh = st.button('Refresh System Mapping :arrows_counterclockwise:')
         
-        if sysmap_refresh: 
-            st.session_state['system_mapping'] = None
-            live_sysmap_data = load_data("system-mapping/live", base_url=base_url, params={'skip': 0, 'limit': 150})
-            save_session_state({'system_mapping': live_sysmap_data})
+    #     if sysmap_refresh: 
+    #         st.session_state['system_mapping'] = None
+    #         live_sysmap_data = load_data("system-mapping/live", base_url=base_url, params={'skip': 0, 'limit': 150})
+    #         save_session_state({'system_mapping': live_sysmap_data})
 
-        st.dataframe(live_sysmap_data)
-        st.divider()
-        cols = list(live_sysmap_data.columns)
-        print(cols)
-        new_form_keys = dict.fromkeys(cols, None)
-        sys_map_form = SystemMapForm(base_url)
-        sys_map_form.create_current_entry_form(new_form_keys)
+    #     st.dataframe(live_sysmap_data)
+    #     st.divider()
+    #     cols = list(live_sysmap_data.columns)
+    #     print(cols)
+    #     new_form_keys = dict.fromkeys(cols, None)
+    #     sys_map_form = SystemMapForm(base_url)
+    #     sys_map_form.create_current_entry_form(new_form_keys)
         
         
 if __name__ == "__main__": 
