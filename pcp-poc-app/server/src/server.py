@@ -8,6 +8,7 @@ api = FastAPI()
 
 def initialize_fastapi_backend():
     # settings = config_manager.get_settings()
+    azure_settings = config_manager.get_azure_keyvault_settings()
     api.mount("/static", StaticFiles(directory="static"), name="static")
     api.include_router(default_router, tags=["default"])
     api.include_router(api_router, tags=["api"])
