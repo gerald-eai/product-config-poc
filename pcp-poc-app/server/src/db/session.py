@@ -37,7 +37,6 @@ AAD_TOKEN = authenticate_client_key(
     client_secret=AZ_CLIENT_SECRET,
     resource_url="https://database.windows.net/",
 )
-# print(f"Generated AAD TOKEN: {AAD_TOKEN.token['access_token']}")
 
 # connection string for LOCAL
 driver_host_str = f"DRIVER={{{SQL_DRIVER}}};SERVER={HOST},{PORT};"
