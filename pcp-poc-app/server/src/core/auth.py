@@ -15,7 +15,10 @@ def authenticate_client_key(
     app = ConfidentialClientApplication(
         client_id, authority=authority_uri, client_credential=client_secret
     )
-
+ 
     token_response = app.acquire_token_for_client(scopes=[resource_url + "/.default"])
     credentials = AADTokenCredentials(token_response, client_id)
     return credentials
+
+def get_cached_token():
+    pass
