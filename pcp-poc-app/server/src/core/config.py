@@ -6,7 +6,7 @@ from pydantic import Field
 # from pydantic_settings import BaseSettings, SettingsConfigDict
 from pydantic import BaseSettings
 from functools import lru_cache
-from azure.identity import DefaultAzureCredential
+from azure.identity import DefaultAzureCredential, AzureCliCredential
 from azure.keyvault.secrets import SecretClient
 
 app_env = os.environ.get("APP_ENVIRONMENT", "local")
@@ -26,7 +26,15 @@ class Settings(BaseSettings):
     DB_PORT: str = Field(env="DB_PORT")
     DB_SCHEMA: str = Field(env="DB_SCHEMA")
     SQL_DRIVER: str = Field(env="SQL_DRIVER")
-
+    
+    AZURE_TENANT_ID: str = Field(env="AZURE_TENANT_ID")
+    AZURE_USERNAME: str = Field(env="AZURE_USERNAME")
+    AZURE_PASSWORD: str = Field(env="AZURE_PASSWORD")
+    AZURE_CLIENT_ID: str = Field(env="AZURE_CLIENT_ID")
+    AZURE_CLIENT_SECRET: str = Field(env="AZURE_CLIENT_SECRET")
+    AZURE_DATABASE: str = Field(env="AZURE_DATABASE")
+    AZURE_HOSTNAME: str = Field(env="AZURE_HOSTNAME")
+    
     class config:
         env_file = f".env.{os.getenv('APP_ENVIRONMENT', f'{app_env}')}"
         env_file_encoding = "utf-8"
@@ -46,12 +54,16 @@ class AzureKeyVaultSettings(BaseSettings):
     DB_SCHEMA: str = Field(env="DB_SCHEMA")
     SQL_DRIVER: str = Field(env="SQL_DRIVER")
     DB_PORT: str = Field(env="DB_PORT")
-    TENANT_ID: str = Field(env="TENANT_ID")
+    AZURE_TENANT_ID: str = Field(env="AZURE_TENANT_ID")
+    AZURE_USERNAME: str = Field(env="AZURE_USERNAME")
+    AZURE_PASSWORD: str = Field(env="AZURE_PASSWORD")
 
     @classmethod
     def load_from_sn_keyvault(cls):
         vault_uri = os.getenv("SN_KEY_VAULT_URI")
         credential = DefaultAzureCredential()
+        # credential = AzureCliCredential(tenant_id="557abecd-3214-4fbb-8e51-414b68ebb796")
+        
         vault_client = SecretClient(vault_url=vault_uri, credential=credential)
         secret_value = {}
         for field_name, field in cls.__fields__.items():
@@ -60,8 +72,10 @@ class AzureKeyVaultSettings(BaseSettings):
                 if (
                     field_info == "DB_SCHEMA"
                     or field_info == "SQL_DRIVER"
-                    or field_info == "TENANT_ID"
+                    or field_info == "AZURE_TENANT_ID"
                     or field_info == "DB_PORT"
+                    or field_info == "AZURE_USERNAME"
+                    or field_info == "AZURE_PASSWORD"
                 ):
                     continue
                 else:
