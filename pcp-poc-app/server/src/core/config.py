@@ -4,7 +4,7 @@ import os
 from pydantic import Field
 from pydantic import BaseSettings
 from functools import lru_cache
-from azure.identity import DefaultAzureCredential
+from azure.identity import DefaultAzureCredential, AzureCliCredential
 from azure.keyvault.secrets import SecretClient
 from typing import Optional
 

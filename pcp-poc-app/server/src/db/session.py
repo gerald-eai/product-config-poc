@@ -40,6 +40,7 @@ else:
 schema_str = f"CONNECTION TIMEOUT=60;"
 conn_str = driver_host_str + uid_str + schema_str
 conn_str = urllib.parse.quote_plus(conn_str)
+
 DB_URI = f"mssql+pyodbc:///?odbc_connect={conn_str}"
 engine = create_engine(DB_URI, poolclass=QueuePool, pool_size=10, pool_pre_ping=True)
 
