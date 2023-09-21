@@ -40,7 +40,7 @@ class ApiConsumer():
         else: 
             raise Exception("Request body is empty!")
     
-    def edit_staged_entry(self, endpoint: str, req_body: Any):
+    def edit_entry(self, endpoint: str, req_body: Any):
         if req_body: 
             response = requests.put(self.base_url + endpoint, json=req_body.dict())
             return convert_json_to_df([response.json()])

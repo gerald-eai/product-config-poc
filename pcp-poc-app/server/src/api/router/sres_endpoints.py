@@ -68,7 +68,7 @@ def create_new_sres(
         raise HTTPException(status_code=400, detail=f"Error: {e}")
 
 
-# perform an update of the data
+# perform an update of the data in the live table
 @router.put("/{odmt_sres_id}", response_model=SresCurrent)
 def update_sres_by_id(
     sres_request: sres_requests.UpdateSres,

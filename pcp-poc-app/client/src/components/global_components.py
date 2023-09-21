@@ -5,7 +5,7 @@ from st_aggrid.grid_options_builder import GridOptionsBuilder
 
 def aggrid_component(df: pd.DataFrame): 
     gb = GridOptionsBuilder.from_dataframe(df)
-    gb.configure_pagination(paginationAutoPageSize=True)
+    gb.configure_pagination(paginationPageSize=25, paginationAutoPageSize=False)
     gb.configure_side_bar()
     gb.configure_default_column(groupable=True)
     gb.configure_selection(selection_mode='single', use_checkbox=True)
