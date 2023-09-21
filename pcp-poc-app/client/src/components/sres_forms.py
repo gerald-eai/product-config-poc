@@ -81,31 +81,6 @@ class SresForm():
                 print(f"Error: {E}")
                 st.error(f"Error Occurred: {E}")
                 
-    # def create_staged_entry_form(self, default_vals: dict): 
-    #     st.info(f"You are editing data for the following SRES: {default_vals['sres_name']}")
-    #     form, form_inputs = self.base_form(default_vals=default_vals)
-        
-    #     submit_form = form.form_submit_button("Update Entry")
-    #     if submit_form: 
-    #         try: 
-    #             form_inputs['include_in_dv'] = 1 if form_inputs['include_in_dv'] == 'Yes' else 0
-    #             form_inputs['odmt_sres_id'] = default_vals['odmt_sres_id']
-                
-    #             update_existing_entry = SresRequest.UpdateSres(**form_inputs)
-    #             print('Newly Created SRES Update Model\n',update_existing_entry)
-    #             for key, value in form_inputs.items(): 
-    #                 print(f"{key}:{value}")
-                
-    #             # print(f"Updating the Existing Entry: \n{update_existing_entry}")
-    #             # run the API that creates the entry
-    #             # response = self.api_session.create_staged_entry(endpoint='sres/', req_body=create_sres_update)
-    #             # print(f"Here is your response: {response}")
-    #             # if (not response.empty): 
-    #             #     st.success("Successfully edited the staged entry!")
-
-    #         except Exception as E: 
-    #             print(f"Error: {E}")
-    #             st.error(f"Error Occurred: {E}")
                 
     def edit_entry_form(self, default_vals: dict): 
         st.info(f"You are editing data for the following SRES: {default_vals['sres_name']}, SRES ID: {default_vals['odmt_sres_id']}, {default_vals['include_exclude']}")

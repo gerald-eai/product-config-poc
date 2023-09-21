@@ -1,36 +1,14 @@
 import streamlit as st 
 from services.api import ApiConsumer
-
-desired_order = [
-            "odmt_sres_id",
-            "hydraulic_system_name",
-            "sres_name",
-            "cell_name",
-            "pi_tag_name",
-            "sm_record_id",
-            "operating_level",
-            "bwl",
-            "twl",
-            "capacity",
-            "engineering_unit",
-            "validated_tag",
-            "turnover_target_lower",
-            "turnover_target_upper",
-            "comments",
-            "include_in_dv",
-            "include_exclude",
-            "production_state",
-            "last_modified",
-        ]
+from data.data_processor import col_order
 
 def page_startup(): 
     st.set_page_config(layout="wide")
     
 @st.cache_data(show_spinner="Request Data from Api...")
 def render_live_tables(_api_session: ApiConsumer, endpoint: str, params: dict): 
-    # make a request to get live and staged updates data
     live_data =  _api_session.get_all(f"{endpoint}/", params=params)
-    live_data = live_data[desired_order]
+    live_data = live_data[col_order]
     st.write(live_data)
 
     
