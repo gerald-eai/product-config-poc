@@ -2,32 +2,9 @@ import streamlit as st
 from services.api import ApiConsumer
 import pandas as pd
 from components.sres_forms import SresForm
-
-# from components.system_mapping_forms import SystemMapForm
-# from components.contact_tank_forms import ContactTankForm
 import components.global_components as Global
+from data.data_processor import col_order
 
-desired_order = [
-            "odmt_sres_id",
-            "hydraulic_system_name",
-            "sres_name",
-            "cell_name",
-            "pi_tag_name",
-            "sm_record_id",
-            "operating_level",
-            "bwl",
-            "twl",
-            "capacity",
-            "engineering_unit",
-            "validated_tag",
-            "turnover_target_lower",
-            "turnover_target_upper",
-            "comments",
-            "include_in_dv",
-            "include_exclude",
-            "production_state",
-            "last_modified",
-        ]
 
 def page_startup():
     st.set_page_config(layout="wide")
@@ -38,16 +15,11 @@ def save_session_state(data: dict):
     print(keys)
     if "sres" in keys and isinstance(data["sres"], pd.DataFrame):
         st.session_state["sres"] = data["sres"]
-    if "system_mapping" in keys and isinstance(data["system_mapping"], pd.DataFrame):
-        st.session_state["system_mapping"] = data["system_mapping"]
-    if "contact_tanks" in keys and isinstance(data["contact_tanks"], pd.DataFrame):
-        st.session_state["contact_tanks"] = data["contact_tanks"]
 
 
 @st.cache_data
 def load_data(prefix: str, base_url: str, params: dict) -> pd.DataFrame:
     api_session = ApiConsumer(base_url)
-    # we're only loading the live data of whatever is requested
     data = api_session.get_all(prefix, params)
     return data
 
@@ -69,11 +41,10 @@ def main():
         live_sres_data = load_data(
             "sres/", base_url=base_url, params={"skip": 0, "limit": 500}
         )
-        live_sres_data = live_sres_data[desired_order]
         save_session_state({"sres": live_sres_data})
 
-    # visualise the ag grid component
-    ag_grid = Global.aggrid_component(live_sres_data[desired_order])
+    # visualise the ag grid component, in the ideal column order
+    ag_grid = Global.aggrid_component(live_sres_data[col_order])
     selected_row = ag_grid["selected_rows"]
     if len(selected_row) > 0:
         sres_form = SresForm(base_url)

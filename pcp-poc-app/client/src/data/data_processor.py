@@ -1,5 +1,27 @@
 import pandas as pd 
 
+col_order = [
+            "odmt_sres_id",
+            "hydraulic_system_name",
+            "sres_name",
+            "cell_name",
+            "pi_tag_name",
+            "sm_record_id",
+            "operating_level",
+            "bwl",
+            "twl",
+            "capacity",
+            "engineering_unit",
+            "validated_tag",
+            "turnover_target_lower",
+            "turnover_target_upper",
+            "comments",
+            "include_in_dv",
+            "include_exclude",
+            "production_state",
+            "last_modified",
+        ]
+
 # converts the body of a response into a dataframe
 def convert_json_to_df(json_data) -> pd.DataFrame: 
     
