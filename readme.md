@@ -1,4 +1,4 @@
 # Product Config Portal Proof of Concept
 
-## A streamlit and FastAPI application for entering in Form data
-Here we have an app that does app stuff. 
+Proof of Concept for Product Config Portal. The application is developed using FastAPI and Streamlit. 
+
