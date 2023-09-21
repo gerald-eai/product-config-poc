@@ -59,58 +59,58 @@ services:
 #        /opt/mssql-tools/bin/sqlcmd -S mssql -U sa -P L0ckedUp -i /var/opt/mssql/DDL/SQLDBPopulateTable.sql
 #        # So that the container doesn't shut down, sleep this thread 
 
-  # fastapi: 
-  #   container_name: pcp-poc-fastapi
-  #   restart: always 
-  #   build: 
-  #     dockerfile: Dockerfile
-  #     context: ./server/
-  #     platforms: 
-  #       - linux/arm64
-  #   environment:
-  #     - APP_ENVIRONMENT=local
+  fastapi: 
+    container_name: pcp-poc-fastapi
+    restart: always 
+    build: 
+      dockerfile: Dockerfile
+      context: ./server/
+      platforms: 
+        - linux/arm64
+    environment:
+      - APP_ENVIRONMENT=local
     
-  #   # map the volumes so that when changes are made in local they reflect in the container
-  #   volumes: 
-  #     - ./server/src/:/app/
-  #   # map the ports <host>:<container>
-  #   ports:
-  #     - "8000:8000"
-  #   depends_on:
-  #     - mssql
-  #   networks: 
-  #     - pcp_poc_vn
-  #   command: 
-  #     - uvicorn
-  #     - server:api
-  #     - --host
-  #     - "0.0.0.0"
-  #     - --port
-  #     - "8000"
-  #     - --reload
+    # map the volumes so that when changes are made in local they reflect in the container
+    volumes: 
+      - ./server/src/:/app/
+    # map the ports <host>:<container>
+    ports:
+      - "8000:8000"
+    depends_on:
+      - mssql
+    networks: 
+      - pcp_poc_vn
+    command: 
+      - uvicorn
+      - server:api
+      - --host
+      - "0.0.0.0"
+      - --port
+      - "8000"
+      - --reload
   
-  # streamlit: 
-  #   container_name: pcp-poc-streamlit
-  #   restart: always 
-  #   build: 
-  #     dockerfile: Dockerfile
-  #     context: ./client/
-  #     platforms: 
-  #       - linux/arm64
-  #   # map the volumes so that when changes are made in local they reflect in the container
-  #   volumes: 
-  #     - ./client/src/:/app/
-  #   # map the ports <host>:<container>
-  #   ports:
-  #     - "8051:8051"
-  #   depends_on:
-  #     - fastapi
-  #     - mssql
-  #   networks: 
-  #     - pcp_poc_vn
-  #   command: 
-  #     - streamlit
-  #     - run
-  #     - app.py
-  #     - --server.port=8051
-  #     - --server.address=0.0.0.0
+  streamlit: 
+    container_name: pcp-poc-streamlit
+    restart: always 
+    build: 
+      dockerfile: Dockerfile
+      context: ./client/
+      platforms: 
+        - linux/arm64
+    # map the volumes so that when changes are made in local they reflect in the container
+    volumes: 
+      - ./client/src/:/app/
+    # map the ports <host>:<container>
+    ports:
+      - "8051:8051"
+    depends_on:
+      - fastapi
+      - mssql
+    networks: 
+      - pcp_poc_vn
+    command: 
+      - streamlit
+      - run
+      - app.py
+      - --server.port=8051
+      - --server.address=0.0.0.0
