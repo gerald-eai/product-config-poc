@@ -10,6 +10,7 @@ def get_token():
     token = get_cached_token()
     if not token:
         raise ValueError("Invalid AAD Token")
+    print(token)
     return token
 
 

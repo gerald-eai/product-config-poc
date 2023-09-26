@@ -1,5 +1,6 @@
 from msal import ConfidentialClientApplication
 from msrestazure.azure_active_directory import AADTokenCredentials
+from azure.identity import DefaultAzureCredential, ClientSecretCredential
 from .config import get_settings
 from cachetools import TTLCache
 
@@ -11,7 +12,6 @@ msal_app = ConfidentialClientApplication(
     authority=f"https://login.microsoftonline.com/{settings.AZURE_TENANT_ID}",
     client_credential=settings.AZURE_CLIENT_SECRET,
 )
-
 
 def authenticate_client_key(
     tenant_id: str,
@@ -26,7 +26,7 @@ def authenticate_client_key(
     app = ConfidentialClientApplication(
         client_id, authority=authority_uri, client_credential=client_secret
     )
- 
+
     token_response = app.acquire_token_for_client(scopes=[resource_url + "/.default"])
     credentials = AADTokenCredentials(token_response, client_id)
     return credentials
@@ -36,10 +36,19 @@ def get_cached_token():
     token = cache.get("aad_token")
     if token is None:
         result = msal_app.acquire_token_for_client(
-            scopes=["https://database.windows.net/.default"],
+            scopes=["https://management.azure.com/.default"],
         )
         if "access_token" in result.keys():
             token = result["access_token"]
             cache["aad_token"] = token
     return token
 
+
+def get_azure_credentials():
+    credentials = cache.get("adf_credentials")
+    if credentials is None:
+        # credentials = DefaultAzureCredential()
+        credentials = ClientSecretCredential(client_id=settings.AZURE_CLIENT_ID, client_secret=settings.AZURE_CLIENT_SECRET, tenant_id=settings.AZURE_TENANT_ID)
+        cache["adf_credentials"] = credentials
+
+    return credentials

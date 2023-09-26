@@ -4,6 +4,8 @@ anyio==3.7.1
 azure-core==1.28.0
 azure-identity==1.13.0
 azure-keyvault==4.2.0
+azure-mgmt-core==1.4.0
+azure-mgmt-datafactory==3.1.0
 fastapi==0.100.0
 GitPython==3.1.32
 httptools==0.6.0
