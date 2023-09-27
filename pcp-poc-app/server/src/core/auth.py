@@ -1,6 +1,6 @@
 from msal import ConfidentialClientApplication
 from msrestazure.azure_active_directory import AADTokenCredentials
-from azure.identity import DefaultAzureCredential, ClientSecretCredential
+from azure.identity import DefaultAzureCredential, ClientSecretCredential, InteractiveBrowserCredential
 from .config import get_settings
 from cachetools import TTLCache
 
@@ -47,8 +47,23 @@ def get_cached_token():
 def get_azure_credentials():
     credentials = cache.get("adf_credentials")
     if credentials is None:
-        # credentials = DefaultAzureCredential()
-        credentials = ClientSecretCredential(client_id=settings.AZURE_CLIENT_ID, client_secret=settings.AZURE_CLIENT_SECRET, tenant_id=settings.AZURE_TENANT_ID)
+        credentials = DefaultAzureCredential()
+        # credentials = ClientSecretCredential(client_id=settings.AZURE_CLIENT_ID, client_secret=settings.AZURE_CLIENT_SECRET, tenant_id=settings.AZURE_TENANT_ID)
         cache["adf_credentials"] = credentials
 
     return credentials
+
+
+def get_user_impersonation_token():
+    access_token = cache.get("user_impersonation_token")
+    if access_token is None: 
+        try: 
+            credential = InteractiveBrowserCredential()
+            token_ = credential.get_token("https://management.azure.com/.default")
+            access_token = token_.token
+            cache['user_impersonation_token'] = access_token
+            # return access_token
+        except Exception as e: 
+            print(f"Auth Failed: {e}")
+    return access_token
+        

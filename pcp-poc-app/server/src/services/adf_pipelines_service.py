@@ -1,7 +1,7 @@
 # Use this as a means to connect to the ADF pipelines
 # create the api request functions required to connect to the ADF pipelines
 from core.config import get_settings
-from core.auth import get_cached_token
+from core.auth import get_cached_token, get_user_impersonation_token
 from azure.mgmt.datafactory import DataFactoryManagementClient
 from azure.identity import DefaultAzureCredential
 import requests
@@ -32,7 +32,8 @@ class DataFactoryService:
     
     @staticmethod
     def _get_aad_token(): 
-        token = get_cached_token()
+        # token = get_cached_token()
+        token = get_user_impersonation_token()
         return token
     
     def list_by_factory(self): 
