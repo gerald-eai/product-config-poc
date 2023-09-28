@@ -8,6 +8,7 @@ from azure.identity import DefaultAzureCredential
 import requests
 import json
 from typing import Optional, List, Dict, Annotated
+from datetime import datetime, timedelta
 
 
 # pipeline run APIs
@@ -22,7 +23,6 @@ class DataFactoryService:
         self.adf_base_uri = self._create_adf_uri(
             self.resource_group_name, self.factory_name, self.subscription_id
         )
-        
 
     @staticmethod
     def _create_adf_uri(resource_group_name, factory_name, subscription_id):
@@ -113,7 +113,9 @@ class DataFactoryService:
             print(f"Response: {response.json()['error']}")
             raise ValueError(f"Error Getting the pipelines.")
 
-    def create_job_run(self, pipeline_name: str, query_params: Optional[TriggerPipelineRequest]):
+    def create_job_run(
+        self, pipeline_name: str, query_params: Optional[TriggerPipelineRequest]
+    ):
         """_summary_
         Post request to create a job run for a specific pipeline.
         returns the job id.
@@ -140,4 +142,57 @@ class DataFactoryService:
             return pipeline_run
         else:
             print(f"Response: {response.json()}")
-            f"Error Triggering the Pipeline!"
+            raise ValueError(f"Error Triggering the Pipeline!")
+
+    def most_recent_runs(
+        self,
+        pipeline_name: str,
+        start_date: datetime = datetime.now() - timedelta(days=1),
+        end_date: datetime = datetime.now() ,
+    ):
+        """_summary_
+        Get the pipeline runs for a specific pipeline.
+
+        Args:
+            pipeline_name (str): Pipeline name to get the pipeline runs for
+            start_date (Optional[datetime], optional): Start date for the pipeline runs. Defaults to datetime.now().
+            end_date (Optional[datetime], optional): End date for the pipeline runs. Defaults to timedelta(days=-1).
+
+        Raises:
+            ValueError: Error based on failed request
+
+        Returns:
+            List of pipeline runs for a specific pipeline.
+        """
+        
+        adf_uri = self.adf_base_uri + f"/queryPipelineRuns?api-version=2018-06-01"
+
+        filters = {
+            "lastUpdatedAfter": f"{start_date}",
+            "lastUpdatedBefore": f"{end_date}",
+            "filters": [
+                {
+                    "operand": "PipelineName",
+                    "operator": "Equals",
+                    "values": [f"{pipeline_name}"],
+                }
+            ],
+        }
+        
+        headers = {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + self._get_aad_token(),
+        }
+        print(f"Filters Body: {filters}")
+        response = requests.post(adf_uri, headers=headers, data=json.dumps(filters))
+        if response.status_code == 200:
+            print(f"Successful response")
+            response_json = response.json()
+            return response_json
+        else: 
+            print(f"Error Getting the pipeline runs. Response: {response.json()['error']}")
+            raise ValueError(f"Error Getting the pipeline runs.")
+            
+            
+    def get_job_run_by_status(self, pipelie_name: str):
+        pass
