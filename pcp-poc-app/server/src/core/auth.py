@@ -1,12 +1,12 @@
 from msal import ConfidentialClientApplication
 from msrestazure.azure_active_directory import AADTokenCredentials
-from azure.identity import DefaultAzureCredential, ClientSecretCredential, InteractiveBrowserCredential
+from azure.identity import DefaultAzureCredential, ClientSecretCredential, InteractiveBrowserCredential, DeviceCodeCredential
 from .config import get_settings
 from cachetools import TTLCache
 
 # loading settings, and getting all of our env variables
 settings = get_settings()
-cache = TTLCache(maxsize=1, ttl=3600)
+cache = TTLCache(maxsize=10, ttl=3600)
 msal_app = ConfidentialClientApplication(
     client_id=settings.AZURE_CLIENT_ID,
     authority=f"https://login.microsoftonline.com/{settings.AZURE_TENANT_ID}",
@@ -59,6 +59,8 @@ def get_user_impersonation_token():
     if access_token is None: 
         try: 
             credential = InteractiveBrowserCredential()
+            # credential = DeviceCodeCredential(client_id=settings.AZURE_CLIENT_ID)
+            # credential = DefaultAzureCredential()
             token_ = credential.get_token("https://management.azure.com/.default")
             access_token = token_.token
             cache['user_impersonation_token'] = access_token
