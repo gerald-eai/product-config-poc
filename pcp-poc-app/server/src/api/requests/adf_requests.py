@@ -1,8 +1,6 @@
 from pydantic import BaseModel
-from typing import List, Optional 
+from typing import Optional
 from datetime import datetime, timedelta
-
-
 
 
 class TriggerPipelineRequest(BaseModel):
@@ -11,8 +9,9 @@ class TriggerPipelineRequest(BaseModel):
     referencePipelineRunId: Optional[str]
     startActivityName: Optional[str]
     startFromFailure: Optional[bool]
-    
-class PipelineRunFiltersRequest(BaseModel): 
+
+
+class PipelineRunFiltersRequest(BaseModel):
     # provide optional parameters here
     pipelineName: str
     startDate: Optional[datetime] = datetime.now() - timedelta(days=1)

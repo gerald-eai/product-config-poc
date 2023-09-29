@@ -17,7 +17,7 @@ def list_adf_pipelines(
 ):
     """_summary_
     Lists all of the pipelines in the Data Factory
-    
+
     Args:
         adf_service (DataFactoryService, optional): adf service responsible for our ADF methods. Defaults to Depends(get_adf_pipelines_service).
 
@@ -39,7 +39,7 @@ def get_adf_pipeline(
     adf_service: DataFactoryService = Depends(get_adf_pipelines_service),
 ):
     """_summary_
-    Get Pipeline based on the pipeline name. 
+    Get Pipeline based on the pipeline name.
 
     Args:
         pipeline_name (str): _description_ pipeline to retrieve
@@ -62,8 +62,8 @@ def get_adf_pipeline_run(
     run_id: str, adf_service: DataFactoryService = Depends(get_adf_pipelines_service)
 ):
     """_summary_
-    Endpoint to get an adf pipeline run information. 
-    
+    Endpoint to get an adf pipeline run information.
+
     Args:
         run_id (str): _description_ ID of the ADF Pipeline Run
         adf_service (DataFactoryService, optional): adf service responsible for our ADF methods. Defaults to Depends(get_adf_pipelines_service).
@@ -82,7 +82,10 @@ def get_adf_pipeline_run(
     return pipeline_run_info
 
 
-@router.post("/pipelines/runs/{pipeline_name}/trigger", response_model=DataFactory.CreatePipelineRun)
+@router.post(
+    "/pipelines/runs/{pipeline_name}/trigger",
+    response_model=DataFactory.CreatePipelineRun,
+)
 def trigger_adf_pipeline_run(
     pipeline_name: str,
     query_params: Optional[TriggerPipelineRequest] = None,
@@ -90,7 +93,7 @@ def trigger_adf_pipeline_run(
 ):
     """_summary_
     Triggers an ADF Pipeline
-    
+
     Args:
         pipeline_name (str): name of the pipeline to trigger
         query_params (Optional[TriggerPipelineRequest], optional): optional pipeline trigger params. Defaults to None.
@@ -103,20 +106,21 @@ def trigger_adf_pipeline_run(
         DataFactory.CreatePipelineRun: Run ID of the triggered pipeline run
     """
     response = adf_service.create_job_run(pipeline_name, query_params)
-    print(f"Response of triggering the pipeline: {response}")
     if response is None:
         raise HTTPException(status_code=400, detail="Pipeline could not be triggered.")
     return response
 
 
-@router.post("/pipelines/runs/most-recent", response_model=List[DataFactory.PipelineRunByFactory])
+@router.post(
+    "/pipelines/runs/most-recent", response_model=List[DataFactory.PipelineRunByFactory]
+)
 def get_recent_pipeline_runs(
     filters_request: PipelineRunFiltersRequest,
     adf_service: DataFactoryService = Depends(get_adf_pipelines_service),
 ):
     """_summary_
     Lists all of the pipeline runs in a data factory
-    
+
     Args:
         filters_request (PipelineRunFiltersRequest): _description_
         adf_service (DataFactoryService, optional): adf service responsible for our ADF methods. Defaults to Depends(get_adf_pipelines_service).

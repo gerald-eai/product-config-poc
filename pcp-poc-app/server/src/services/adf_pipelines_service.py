@@ -1,15 +1,15 @@
 # Use this as a means to connect to the ADF pipelines
 # create the api request functions required to connect to the ADF pipelines
-from core.config import get_settings
-from core.auth import get_cached_token, get_user_impersonation_token
-from api.requests.adf_requests import TriggerPipelineRequest
-import schemas.adf_schema as DataFactory
-from azure.mgmt.datafactory import DataFactoryManagementClient
-from azure.identity import DefaultAzureCredential
-import requests
 import json
-from typing import Optional, List, Dict, Annotated
 from datetime import datetime, timedelta
+from typing import List, Optional
+
+import requests
+import schemas.adf_schema as DataFactory
+from api.requests.adf_requests import TriggerPipelineRequest
+from azure.identity import DefaultAzureCredential
+from core.auth import get_user_impersonation_token
+from core.config import get_settings
 
 
 # pipeline run APIs
@@ -49,7 +49,6 @@ class DataFactoryService:
         list the pipelines found in the ADF
         Use the requests api instead of the client sdk
         """
-        print(f"Listing by the Factory Name")
         adf_uri = self.adf_base_uri + f"/pipelines?api-version=2018-06-01"
         headers = {
             "Content-Type": "application/json",
@@ -58,17 +57,14 @@ class DataFactoryService:
         response = requests.get(adf_uri, headers=headers)
         if response.status_code == 200:
             pipeline_response = response.json()
-            print(f"pipelines_list.json(): \n{pipeline_response}")
-            
+
             pipelines_list = []
-            for item in pipeline_response['value']: 
+            for item in pipeline_response["value"]:
                 pipelines_list.append(DataFactory.Pipeline.parse_obj(item))
-                
+
             return pipelines_list
         else:
-            print(f"Response: {response.json()['error']}")
             raise ValueError(f"Error Getting the pipelines.")
-
 
     def get_pipeline(self, pipeline_name: str) -> DataFactory.Pipeline:
         """
@@ -78,7 +74,6 @@ class DataFactoryService:
         adf_uri = (
             self.adf_base_uri + f"/pipelines/{pipeline_name}?api-version=2018-06-01"
         )
-        print(f"ADF URI: {adf_uri}")
         headers = {
             "Content-Type": "application/json",
             "Authorization": "Bearer " + self._get_aad_token(),
@@ -86,11 +81,9 @@ class DataFactoryService:
         response = requests.get(adf_uri, headers=headers)
         if response.status_code == 200:
             pipeline_info = response.json()
-            print(f"pipeline_info: \n{pipeline_info}")
             pipeline_info = DataFactory.Pipeline.parse_obj(pipeline_info)
             return pipeline_info
         else:
-            print(f"Response: {response.json()['error']}")
             raise ValueError("No Pipelines returned!")
 
     def get_pipeline_run(self, run_id: str) -> DataFactory.PipelineRun:
@@ -114,10 +107,9 @@ class DataFactoryService:
         if response.status_code == 200:
             pipeline_info = response.json()
             pipeline_run = DataFactory.PipelineRun.parse_obj(pipeline_info)
-    
+
             return pipeline_run
         else:
-            print(f"Response: {response.json()['error']}")
             raise ValueError(f"Error Getting the pipelines.")
 
     def create_job_run(
@@ -145,21 +137,20 @@ class DataFactoryService:
         response = requests.post(adf_uri, headers=headers)
         if response.status_code == 200:
             pipeline_run = response.json()
-            print(f"pipeline_run.json(): \n{pipeline_run}")
-            pipeline_run_id = DataFactory.CreatePipelineRun.parse_obj(pipeline_run["value"])
-            
+            pipeline_run_id = DataFactory.CreatePipelineRun.parse_obj(
+                pipeline_run["value"]
+            )
+
             return pipeline_run_id
         else:
-            print(f"Response: {response.json()}")
             raise ValueError(f"Error Triggering the Pipeline!")
 
     def most_recent_runs(
         self,
         pipeline_name: str,
         start_date: datetime = datetime.now() - timedelta(days=1),
-        end_date: datetime = datetime.now() ,
+        end_date: datetime = datetime.now(),
     ) -> List[DataFactory.PipelineRunByFactory]:
-        
         """_summary_
         Get the pipeline runs for a specific pipeline.
 
@@ -174,7 +165,7 @@ class DataFactoryService:
         Returns:
             List of pipeline runs for a specific pipeline.
         """
-        
+
         adf_uri = self.adf_base_uri + f"/queryPipelineRuns?api-version=2018-06-01"
 
         filters = {
@@ -188,24 +179,21 @@ class DataFactoryService:
                 }
             ],
         }
-        
+
         headers = {
             "Content-Type": "application/json",
             "Authorization": "Bearer " + self._get_aad_token(),
         }
-        print(f"Filters Body: {filters}")
         response = requests.post(adf_uri, headers=headers, data=json.dumps(filters))
         if response.status_code == 200:
             response_json = response.json()
             pipeline_runs = []
-            for item in response_json['value']: 
+            for item in response_json["value"]:
                 pipeline_runs.append(DataFactory.PipelineRun.parse_obj(item))
             return pipeline_runs
-        
-        else: 
-            print(f"Error Getting the pipeline runs. Response: {response.json()['error']}")
+
+        else:
             raise ValueError(f"Error Getting the pipeline runs.")
-            
-            
+
     def get_job_run_by_status(self, pipelie_name: str):
         pass
