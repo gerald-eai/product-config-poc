@@ -32,6 +32,11 @@ class Settings(BaseSettings):
     AZURE_DATABASE: str = Field(env="AZURE_DATABASE")
     AZURE_HOSTNAME: str = Field(env="AZURE_HOSTNAME")
     AZURE_SCHEMA: str = Field(env="AZURE_SCHEMA")
+    
+    # ADF params 
+    ADF_SUBSCRIPTION_ID: str = Field(env="ADF_SUBSCRIPTION_ID")
+    ADF_RESOURCE_GROUP: str = Field(env="ADF_RESOURCE_GROUP")
+    ADF_FACTORY_NAME: str = Field(env="ADF_FACTORY_NAME")
 
     # sn keyvault values
     SN_CLIENT_ID: Optional[str] = Field(env="SNServicePrincipleAppID")
