@@ -1,13 +1,13 @@
 # Form Components for Sres 
 import streamlit as st 
 import schemas.sres_request as SresRequest 
-from services.api import ApiConsumer
+from services.api import DatabaseAPIClient
 from data.data_processor import load_hydraulic_systems
 
 class SresForm(): 
     
     def __init__(self, base_url): 
-        self.api_session = ApiConsumer(base_url=base_url)
+        self.api_session = DatabaseAPIClient(base_url=base_url)
     
     def validate_input(self, input_type, val):
         if isinstance(val, str): 

@@ -11,7 +11,6 @@ def get_token():
     token = get_user_impersonation_token()
     if not token:
         raise ValueError("Invalid AAD Token")
-    print(token)
     return token
 
 
