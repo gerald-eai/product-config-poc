@@ -1,5 +1,5 @@
 import streamlit as st
-from services.api import ApiConsumer
+from services.api import DatabaseAPIClient
 import pandas as pd
 
 
@@ -10,7 +10,7 @@ def page_startup():
 @st.cache_data
 def load_data(prefix: str, base_url: str, params: dict) -> pd.DataFrame:
     # we're only loading the live data of whatever is requested
-    api_session = ApiConsumer(base_url)
+    api_session = DatabaseAPIClient(base_url)
     data = api_session.get_all(prefix, params)
     return data
 

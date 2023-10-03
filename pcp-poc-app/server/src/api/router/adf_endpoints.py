@@ -83,12 +83,11 @@ def get_adf_pipeline_run(
 
 
 @router.post(
-    "/pipelines/runs/{pipeline_name}/trigger",
+    "/pipelines/runs",
     response_model=DataFactory.CreatePipelineRun,
 )
 def trigger_adf_pipeline_run(
-    pipeline_name: str,
-    query_params: Optional[TriggerPipelineRequest] = None,
+    query_params: TriggerPipelineRequest,
     adf_service: DataFactoryService = Depends(get_adf_pipelines_service),
 ):
     """_summary_
@@ -105,7 +104,7 @@ def trigger_adf_pipeline_run(
     Returns:
         DataFactory.CreatePipelineRun: Run ID of the triggered pipeline run
     """
-    response = adf_service.create_job_run(pipeline_name, query_params)
+    response = adf_service.create_job_run(query_params.pipelineName, query_params)
     if response is None:
         raise HTTPException(status_code=400, detail="Pipeline could not be triggered.")
     return response

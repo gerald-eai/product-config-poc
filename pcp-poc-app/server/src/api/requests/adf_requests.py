@@ -4,6 +4,7 @@ from datetime import datetime, timedelta
 
 
 class TriggerPipelineRequest(BaseModel):
+    pipelineName: str
     # query parameters
     isRecovery: Optional[bool]
     referencePipelineRunId: Optional[str]

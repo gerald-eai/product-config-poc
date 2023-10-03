@@ -134,11 +134,26 @@ class DataFactoryService:
             "Content-Type": "application/json",
             "Authorization": "Bearer " + self._get_aad_token(),
         }
-        response = requests.post(adf_uri, headers=headers)
+        if query_params:
+            response = requests.post(
+                adf_uri,
+                headers=headers,
+                data=json.dumps(
+                    {
+                        "isRecovery": query_params.isRecovery,
+                        "referencePipelineRunId": query_params.referencePipelineRunId,
+                        "startActivityName": query_params.startActivityName,
+                        "startFromFailure": query_params.startFromFailure,
+                    }
+                ),
+            )
+        else:
+            response = requests.post(adf_uri, headers=headers)
+
         if response.status_code == 200:
             pipeline_run = response.json()
             pipeline_run_id = DataFactory.CreatePipelineRun.parse_obj(
-                pipeline_run["value"]
+                pipeline_run["run_id"]
             )
 
             return pipeline_run_id

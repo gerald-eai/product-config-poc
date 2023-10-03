@@ -1,5 +1,5 @@
 import streamlit as st
-from services.api import ApiConsumer
+from services.api import DatabaseAPIClient
 import pandas as pd
 from components.sres_forms import SresForm
 import components.global_components as Global
@@ -19,7 +19,7 @@ def save_session_state(data: dict):
 
 @st.cache_data
 def load_data(prefix: str, base_url: str, params: dict) -> pd.DataFrame:
-    api_session = ApiConsumer(base_url)
+    api_session = DatabaseAPIClient(base_url)
     data = api_session.get_all(prefix, params)
     return data
 
