@@ -14,7 +14,7 @@ from datetime import datetime
 from typing import List
 
 
-router = APIRouter(prefix="/sres", tags=["SRes Endpoints"])
+router = APIRouter(prefix="/sres", tags=["SRES Endpoints"])
 
 
 # Read Operations
