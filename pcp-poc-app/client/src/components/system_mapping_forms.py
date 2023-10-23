@@ -1,13 +1,14 @@
-# Form Components for Sres 
+# Form Components for System Mapping
+# Component isn't required for POC, but is kept for future implementations
 import streamlit as st 
 import schemas.system_mapping_request as SystemMapRequest
-from services.api import ApiConsumer
+from services.api import DatabaseAPIClient
 import datetime as datetime 
 
 class SystemMapForm(): 
     
     def __init__(self, base_url): 
-        self.api_session = ApiConsumer(base_url=base_url)
+        self.api_session = DatabaseAPIClient(base_url=base_url)
     
     def base_form(self, default_vals: dict): 
         pass

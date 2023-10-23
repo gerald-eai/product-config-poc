@@ -5,7 +5,7 @@ from datetime import timedelta
 
 class QueryPipelineRunsByFactory(BaseModel):
     pipelineName: str
-    startDate: Optional[str] = (datetime.now() - timedelta(days=5)).isoformat()
+    startDate: Optional[str] = (datetime.now() - timedelta(days=10)).isoformat()
     endDate: Optional[str] = datetime.now().isoformat()
     # optional params
     operator: Optional[str]

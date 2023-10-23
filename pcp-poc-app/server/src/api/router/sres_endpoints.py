@@ -14,7 +14,7 @@ from datetime import datetime
 from typing import List
 
 
-router = APIRouter(prefix="/sres", tags=["SRes Endpoints"])
+router = APIRouter(prefix="/sres", tags=["SRES Endpoints"])
 
 
 # Read Operations
@@ -24,6 +24,16 @@ def get_sres_home(
     limit: int = 100,
     sres_service: SresService = Depends(get_sres_service),
 ):
+    """Returns a paginated response of the SRES current table
+
+    Args:
+        skip (int, optional): Our offset value. Defaults to 0.
+        limit (int, optional): Number of records to return per page. Defaults to 100.
+        sres_service (SresService): Sres Service dependency injection.
+
+    Returns:
+        List[SresCurrent]: Paginated list of all Sres current records
+    """
     sres_data = sres_service.get_all(skip, limit)
     return sres_data
 
@@ -32,21 +42,40 @@ def get_sres_home(
 def get_sres_by_id(
     odmt_sres_id: int, sres_service: SresService = Depends(get_sres_service)
 ):
+    """Returns Sres record from the table that matches the odmt_sres_id. 
+
+    Args:
+        odmt_sres_id (int): sres id that is being queried
+        sres_service (SresService): Sres Service dependency injection.
+        
+    Returns:
+        SresCurrent: Sres object matching the id
+    """
     sres_data = sres_service.get_by_id(sres_id=odmt_sres_id)
     return sres_data
 
 
-# create new entry in the current table
 @router.post("/", response_model=SresCurrent)
 def create_new_sres(
     create_sres_request: sres_requests.CreateNewSres,
     sres_service: SresService = Depends(get_sres_service),
     audit_service: AuditLogService = Depends(get_audit_log_service),
 ):
-    print(f"Create New Sres Request: \n{create_sres_request}")
+    """Creates a new sres object in the database
+
+    Args:
+        create_sres_request (sres_requests.CreateNewSres): New Sres object
+        sres_service (SresService): Sres Service dependency injection.
+        audit_service (AuditLogService, optional): Audit log service dependency injection
+
+    Raises:
+        HTTPException: An exception if there is an error creating the new object
+
+    Returns:
+        SresCurrent: The current SRES object found in the database
+    """
     try:
         new_sres_obj = sres_service.create_new_entry(create_sres_request)
-        print(f"New Sres Object: \n{new_sres_obj}")
         new_audit_event = CreateAuditRequest(
             table_altered="pcp_poc_sres",
             columns_altered="odmt_sres_id;hydraulic_system_name;sres_name;cell_name;pi_tag_name;engineering_unit",
@@ -59,12 +88,10 @@ def create_new_sres(
             pushed_to_live_date=datetime.now(),
             row_id_altered=str(new_sres_obj.odmt_sres_id),
         )
-        print(f"New Audit Event: \n{new_audit_event}")
         audit_service.create_new_event(new_audit_event)
         return new_sres_obj
 
     except Exception as e:
-        print(f"Error: {e}")
         raise HTTPException(status_code=400, detail=f"Error: {e}")
 
 
@@ -75,7 +102,19 @@ def update_sres_by_id(
     sres_service: SresService = Depends(get_sres_service),
     audit_service: AuditLogService = Depends(get_audit_log_service),
 ):
-    # use the update service
+    """Update an Sres object in the SRES table given an id to update
+
+    Args:
+        create_sres_request (sres_requests.CreateNewSres): New Sres object
+        sres_service (SresService): Sres Service dependency injection.
+        audit_service (AuditLogService, optional): Audit log service dependency injection
+
+    Raises:
+        HTTPException: An exception if there is an error editing the new object
+
+    Returns:
+        SresCurrent: The current SRES object found in the database
+    """
     try:
         updated_sres_obj = sres_service.update_existing_entry(sres_request)
         print(f"Updated Sres Object: \n{updated_sres_obj}")
@@ -91,9 +130,7 @@ def update_sres_by_id(
             status="Pending",
             row_id_altered=str(updated_sres_obj.odmt_sres_id),
         )
-        print(f"New Audit Event: \n{update_audit_event}")
         audit_service.create_new_event(update_audit_event)
         return updated_sres_obj
     except Exception as e:
-        print(f"Error: {e}")
         raise HTTPException(status_code=400, detail=f"Error: {e}")

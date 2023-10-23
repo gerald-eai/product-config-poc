@@ -47,5 +47,5 @@ docker build Dockerfile
 
 
 ## Tech Stack 
-The API Server uses a FastAPI WebServer and connects to a database using an ODBC connection, using the sql connection library `sqlalchemy`. The Microsoft Authentication Library is used to generate an AAD Token that authenticates the API requests.  
+The API Server uses a FastAPI WebServer and connects to a database using an ODBC connection, using the sql connection library `sqlalchemy` & `sqlmodel`. The Microsoft Authentication Library is used to generate an AAD Token that authenticates the API requests.  
 

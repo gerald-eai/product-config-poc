@@ -1,12 +1,12 @@
 from api.api import api_router, default_router
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
-from core.app_startup import ProductConfigAPI
 from core.auth import get_cached_token, get_user_impersonation_token
 
 api = FastAPI(title="Product Config Portal API Server", debug=True)
-# create a dependency to get the cached token
+
 def get_token():
+    """dependency function to get the AAD token"""
     # token = get_cached_token()
     token = get_user_impersonation_token()
     if not token:
@@ -15,6 +15,7 @@ def get_token():
 
 
 def initialize_fastapi_backend():
+    """Initialises our fastapi server"""
     api.mount("/static", StaticFiles(directory="static"), name="static")
     api.include_router(default_router, tags=["default"])
     api.include_router(api_router, tags=["api"])
