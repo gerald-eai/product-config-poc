@@ -2,7 +2,7 @@
 # create the api request functions required to connect to the ADF pipelines
 import json
 from datetime import datetime, timedelta
-from typing import List, Optional
+from typing import List, Optional, Tuple
 
 import requests
 import schemas.adf_schema as DataFactory
@@ -14,8 +14,11 @@ from core.config import get_settings
 
 # pipeline run APIs
 class DataFactoryService:
-    # our class responsible for all of the API calls to the Data Factory
-    def __init__(self, azure_credentials: DefaultAzureCredential):
+    """_summary_
+    Service class for making REST API calls to the Data Factory API.
+    """
+
+    def __init__(self):
         (
             self.subscription_id,
             self.resource_group_name,
@@ -26,11 +29,28 @@ class DataFactoryService:
         )
 
     @staticmethod
-    def _create_adf_uri(resource_group_name, factory_name, subscription_id):
+    def _create_adf_uri(resource_group_name, factory_name, subscription_id) -> str:
+        """_summary_
+        Generate URI string for the ADF.
+
+        Args:
+            resource_group_name (_type_): _description_
+            factory_name (_type_): _description_
+            subscription_id (_type_): _description_
+
+        Returns:
+            str: the base uri for the ADF REST APIs
+        """
         return f"https://management.azure.com/subscriptions/{subscription_id}/resourceGroups/{resource_group_name}/providers/Microsoft.DataFactory/factories/{factory_name}"
 
     @staticmethod
-    def _get_adf_settings():
+    def _get_adf_settings() -> Tuple[str, str, str]:
+        """_summary_
+        Get ADF settings information for the application.
+
+        Returns:
+            Tuple[str, str, str]: ADF connection string parameters
+        """
         settings = get_settings()
         return (
             settings.ADF_SUBSCRIPTION_ID,
@@ -45,9 +65,15 @@ class DataFactoryService:
         return token
 
     def list_by_factory(self) -> List[DataFactory.Pipeline]:
-        """
+        """_summary_
         list the pipelines found in the ADF
         Use the requests api instead of the client sdk
+
+        Raises:
+            ValueError: Returns an error if unable to get the pipelines
+
+        Returns:
+            List[DataFactory.Pipeline]: List of Pipelines found in the data factory
         """
         adf_uri = self.adf_base_uri + f"/pipelines?api-version=2018-06-01"
         headers = {
@@ -67,8 +93,16 @@ class DataFactoryService:
             raise ValueError(f"Error Getting the pipelines.")
 
     def get_pipeline(self, pipeline_name: str) -> DataFactory.Pipeline:
-        """
-        Get Pipeline info based on the pipeline_name
+        """_summary_
+        Get Pipeline info for a pipeline matching the name provided
+
+        Args:
+            pipeline_name (str): Pipeline name to obtain
+
+        Raises:
+            ValueError: Error if API request fails
+        Returns:
+            DataFactory.Pipeline: Pipeline information
         """
 
         adf_uri = (
@@ -96,7 +130,7 @@ class DataFactoryService:
             ValueError: Error based on not finding pipeline run information
 
         Returns:
-            Run info for a specific run id of a pipeline.
+            DataFactory.PipelineRun:Run info for a specific run id of a pipeline.
         """
         adf_uri = self.adf_base_uri + f"/pipelineruns/{run_id}?api-version=2018-06-01"
         headers = {
@@ -117,14 +151,17 @@ class DataFactoryService:
     ) -> DataFactory.CreatePipelineRun:
         """_summary_
         Post request to create a job run for a specific pipeline.
-        returns the job id.
+        Returns the job id for a pipeline run
 
         Args:
+            pipeline_name (str): _description_
             query_params (Optional[TriggerPipelineRequest]):
                 Optional query parameters for the POST request of the applicaiton
+        Raises:
+            ValueError: Error based on failed request
 
-        Returns: pipeline_run information
-            _type_: _description_
+        Returns:
+            DataFactory.CreatePipelineRun: Pipeline Run ID
         """
         adf_uri = (
             self.adf_base_uri
@@ -178,7 +215,7 @@ class DataFactoryService:
             ValueError: Error based on failed request
 
         Returns:
-            List of pipeline runs for a specific pipeline.
+            DataFactory.PipelineRunByFactory: List of pipeline runs for a specific pipeline.
         """
 
         adf_uri = self.adf_base_uri + f"/queryPipelineRuns?api-version=2018-06-01"
@@ -209,6 +246,3 @@ class DataFactoryService:
 
         else:
             raise ValueError(f"Error Getting the pipeline runs.")
-
-    def get_job_run_by_status(self, pipelie_name: str):
-        pass

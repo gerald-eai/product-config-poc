@@ -3,7 +3,7 @@ from core.config import get_settings, get_azure_keyvault_settings
 from sqlmodel import create_engine, Session
 from sqlalchemy.pool import QueuePool
 import urllib
-
+from typing import Generator
 
 # az_settings = get_azure_keyvault_settings()
 settings = get_settings()
@@ -26,7 +26,7 @@ AZURE_SCHEMA = settings.AZURE_SCHEMA
 PORT = settings.DB_PORT
 SQL_DRIVER = settings.SQL_DRIVER
 
-# connection strings '
+# connection strings
 driver_host_str = ""
 uid_str = ""
 
@@ -45,7 +45,12 @@ DB_URI = f"mssql+pyodbc:///?odbc_connect={conn_str}"
 engine = create_engine(DB_URI, poolclass=QueuePool, pool_size=10, pool_pre_ping=True)
 
 
-def get_session():
+def get_session() -> Generator[Session, None, None]:
+    """Will yield a session object
+
+    Yields:
+        Session: A generator object representing our database session object
+    """
     try:
         db_session = Session(engine)
         yield db_session

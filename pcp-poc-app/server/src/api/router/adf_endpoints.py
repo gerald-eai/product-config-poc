@@ -15,8 +15,7 @@ router = APIRouter(prefix="/data-factory", tags=["ADF Query Endpoints"])
 def list_adf_pipelines(
     adf_service: DataFactoryService = Depends(get_adf_pipelines_service),
 ):
-    """_summary_
-    Lists all of the pipelines in the Data Factory
+    """Lists all of the pipelines in the Data Factory
 
     Args:
         adf_service (DataFactoryService, optional): adf service responsible for our ADF methods. Defaults to Depends(get_adf_pipelines_service).
@@ -38,8 +37,7 @@ def get_adf_pipeline(
     pipeline_name: str,
     adf_service: DataFactoryService = Depends(get_adf_pipelines_service),
 ):
-    """_summary_
-    Get Pipeline based on the pipeline name.
+    """Get Pipeline based on the pipeline name.
 
     Args:
         pipeline_name (str): _description_ pipeline to retrieve
@@ -61,8 +59,7 @@ def get_adf_pipeline(
 def get_adf_pipeline_run(
     run_id: str, adf_service: DataFactoryService = Depends(get_adf_pipelines_service)
 ):
-    """_summary_
-    Endpoint to get an adf pipeline run information.
+    """Endpoint to get an adf pipeline run information.
 
     Args:
         run_id (str): _description_ ID of the ADF Pipeline Run
@@ -90,8 +87,7 @@ def trigger_adf_pipeline_run(
     query_params: TriggerPipelineRequest,
     adf_service: DataFactoryService = Depends(get_adf_pipelines_service),
 ):
-    """_summary_
-    Triggers an ADF Pipeline
+    """Triggers an ADF Pipeline
 
     Args:
         pipeline_name (str): name of the pipeline to trigger
@@ -99,7 +95,7 @@ def trigger_adf_pipeline_run(
         adf_service (DataFactoryService, optional): adf service responsible for our ADF methods. Defaults to Depends(get_adf_pipelines_service).
 
     Raises:
-        HTTPException: _description_
+        HTTPException: An error if the pipeline fails to be triggered
 
     Returns:
         DataFactory.CreatePipelineRun: Run ID of the triggered pipeline run
@@ -117,8 +113,7 @@ def get_recent_pipeline_runs(
     filters_request: PipelineRunFiltersRequest,
     adf_service: DataFactoryService = Depends(get_adf_pipelines_service),
 ):
-    """_summary_
-    Lists all of the pipeline runs in a data factory
+    """Lists all of the pipeline runs in a data factory
 
     Args:
         filters_request (PipelineRunFiltersRequest): _description_
