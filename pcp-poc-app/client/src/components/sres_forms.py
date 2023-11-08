@@ -166,7 +166,7 @@ class SresForm:
             default_vals (dict): Default values for the SRES form, these are empty or obtained from the database
         """
         st.info(
-            f"You are editing data for the following SRES: {default_vals['sres_name']}, SRES ID: {default_vals['odmt_sres_id']}, {default_vals['include_exclude']}"
+            f"You are editing data for the following SRES: {default_vals['sres_name']}, SRES ID: {default_vals['odmt_sres_id']}"
         )
         form, form_inputs = self.base_form(default_vals=default_vals)
 
@@ -177,9 +177,9 @@ class SresForm:
                 form_inputs["include_in_dv"] = (
                     1 if form_inputs["include_in_dv"] == "Yes" else 0
                 )
-                form_inputs["include_exclude"] = (
-                    1 if form_inputs["include_in_dv"] == "Include" else 0
-                )
+                # form_inputs["include_exclude"] = (
+                #     1 if form_inputs["include_in_dv"] == "Include" else 0
+                # )
                 form_inputs["odmt_sres_id"] = default_vals["odmt_sres_id"]
                 form_inputs["production_state"] = "pending"
                 # validates the inputs of the form
